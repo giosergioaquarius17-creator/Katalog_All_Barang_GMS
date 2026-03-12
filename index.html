@@ -45,28 +45,22 @@
 </div>
 
 <script>
-    // 1. Data Produk Awal
-    let daftarProduk = [
+    // 1. Inisialisasi: Ambil data dari LocalStorage atau gunakan data default jika kosong
+    let daftarProduk = JSON.parse(localStorage.getItem('myKatalogData')) || [
         {
             nama: "Kamera DSLR Pro",
             harga: "Rp 12.000.000",
             gambar: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
             deskripsi: "Kamera profesional untuk hasil foto tajam."
-        },
-        {
-            nama: "Laptop Gaming Ultra",
-            harga: "Rp 25.000.000",
-            gambar: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500",
-            deskripsi: "Performa tinggi untuk gaming dan desain grafis."
         }
     ];
 
-    // 2. Fungsi untuk Menampilkan Produk ke Layar
+    // 2. Fungsi untuk menampilkan produk ke layar
     function renderKatalog(data) {
         const grid = document.getElementById('catalog-grid');
-        grid.innerHTML = ""; // Bersihkan tampilan lama
+        grid.innerHTML = ""; 
 
-        data.forEach(item => {
+        data.forEach((item, index) => {
             grid.innerHTML += `
                 <div class="product-card">
                     <img src="${item.gambar}" alt="${item.nama}">
@@ -74,13 +68,14 @@
                         <h3>${item.nama}</h3>
                         <p>${item.deskripsi}</p>
                         <p class="price">${item.harga}</p>
+                        <button onclick="hapusProduk(${index})" style="background:#ff4757; margin-top:10px;">Hapus</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    // 3. Fungsi Tambah Produk Manual
+    // 3. Fungsi Tambah Produk & Simpan ke LocalStorage
     function tambahProduk() {
         const nama = document.getElementById('new-name').value;
         const harga = document.getElementById('new-price').value;
@@ -88,23 +83,51 @@
         const desc = document.getElementById('new-desc').value;
 
         if(nama && harga && img) {
-            const produkBaru = { nama: nama, harga: harga, gambar: img, deskripsi: desc };
-            daftarProduk.push(produkBaru); // Masukkan ke daftar
-            renderKatalog(daftarProduk); // Update tampilan
-            alert("Produk berhasil ditambahkan!");
+            const produkBaru = { nama, harga, gambar: img, deskripsi: desc };
+            
+            // Tambah ke array
+            daftarProduk.push(produkBaru);
+            
+            // SIMPAN KE LOCALSTORAGE
+            saveData();
+            
+            // Render ulang dan bersihkan form
+            renderKatalog(daftarProduk);
+            clearForm();
+            alert("Produk berhasil disimpan di browser Anda!");
         } else {
             alert("Mohon isi minimal Nama, Harga, dan Gambar!");
         }
     }
 
-    // 4. Fungsi Cari Produk
+    // 4. Fungsi bantu untuk menyimpan data
+    function saveData() {
+        localStorage.setItem('myKatalogData', JSON.stringify(daftarProduk));
+    }
+
+    // 5. Fungsi Hapus Produk
+    function hapusProduk(index) {
+        if(confirm("Hapus produk ini?")) {
+            daftarProduk.splice(index, 1);
+            saveData();
+            renderKatalog(daftarProduk);
+        }
+    }
+
+    function clearForm() {
+        document.getElementById('new-name').value = "";
+        document.getElementById('new-price').value = "";
+        document.getElementById('new-img').value = "";
+        document.getElementById('new-desc').value = "";
+    }
+
     function cariProduk() {
         const keyword = document.getElementById('search-input').value.toLowerCase();
         const hasilFilter = daftarProduk.filter(p => p.nama.toLowerCase().includes(keyword));
         renderKatalog(hasilFilter);
     }
 
-    // Jalankan render pertama kali saat halaman dibuka
+    // Jalankan render pertama kali
     renderKatalog(daftarProduk);
 </script>
 
