@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Order WhatsApp</title>
+    <title>Katalog Pro - Full Features</title>
     <style>
         :root {
             --primary: #2563eb;
             --whatsapp: #25d366;
             --danger: #ef4444;
+            --secondary: #64748b;
             --bg: #f8fafc;
             --text: #1e293b;
         }
@@ -18,59 +19,69 @@
         
         /* Panel Form */
         .panel { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: var(--text); font-weight: 800; }
+        h1 { text-align: center; color: var(--text); font-weight: 800; margin-bottom: 30px; }
         
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
         .full-width { grid-column: 1 / -1; }
         
-        .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; color: white; }
-        .btn-primary { background: var(--primary); }
-        .btn-wa { background: var(--whatsapp); display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-top: 15px; }
-        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; opacity: 0.7; }
-        .btn:hover { opacity: 0.9; transform: scale(1.01); }
+        .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-primary { background: var(--primary); width: 100%; }
+        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; }
+        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; }
+        .btn-backup { background: var(--secondary); margin-top: 10px; font-size: 12px; }
 
-        /* GRID KATALOG UTAMA */
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        /* FILTER KATEGORI */
+        .filter-section { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--primary); background: transparent; color: var(--primary); cursor: pointer; font-weight: 500; }
+        .filter-btn.active { background: var(--primary); color: white; }
+
+        /* GRID KATALOG */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card h3 { padding: 15px; margin: 0; font-size: 15px; text-align: center; color: var(--text); }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card h3 { padding: 12px; margin: 0; font-size: 14px; text-align: center; color: var(--text); }
 
-        /* MODAL POPUP */
+        /* MODAL */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 2vh auto; border-radius: 16px; max-width: 500px; overflow: hidden; position: relative; animation: zoomIn 0.3s ease; max-height: 95vh; overflow-y: auto; }
+        .modal-content { background: white; margin: 2vh auto; border-radius: 16px; max-width: 500px; position: relative; animation: zoomIn 0.3s ease; max-height: 95vh; overflow-y: auto; }
         @keyframes zoomIn { from {transform: scale(0.95); opacity: 0;} to {transform: scale(1); opacity: 1;} }
         .close { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #fff; z-index: 10; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        
         .modal-body { padding: 25px; }
-        .modal-img { width: 100%; height: 300px; object-fit: contain; background: #f1f5f9; }
-        
-        .modal-desc-area { 
-            white-space: pre-wrap; line-height: 1.6; color: #334155; background: #f8fafc; 
-            padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px;
-        }
-
-        .modal-badge { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; text-transform: uppercase; }
+        .modal-img { width: 100%; height: 280px; object-fit: contain; background: #f1f5f9; }
+        .modal-desc-area { white-space: pre-wrap; line-height: 1.6; color: #334155; background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
+        .modal-badge { background: #e2e8f0; color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>My Digital Catalog</h1>
+    <h1>Katalog Digital Kami</h1>
 
     <div class="panel">
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Nama File Gambar">
+            <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: male-adaptor.jpg)">
+            
             <select id="p-cat">
-                <option value="Umum">Kategori: Umum</option>
+                <option value="Pipa">Pipa</option>
+                <option value="Aksesoris Pipa">Aksesoris Pipa</option>
                 <option value="Fitting">Fitting</option>
-                <option value="Elektronik">Elektronik</option>
+                <option value="Lainnya">Lainnya</option>
             </select>
-            <textarea id="p-desc" class="full-width" style="height: 120px;" placeholder="Tulis rincian harga di sini..."></textarea>
+            
+            <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Rincian Harga & Ukuran..."></textarea>
             <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
+            <button class="btn btn-backup" onclick="downloadBackup()">Download Backup Data (JSON)</button>
         </div>
+    </div>
+
+    <div class="filter-section" id="filter-buttons">
+        <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua</button>
+        <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
+        <button class="filter-btn" onclick="filterCat('Aksesoris Pipa', this)">Aksesoris</button>
+        <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
     </div>
 
     <div id="catalog-grid" class="catalog-grid"></div>
@@ -86,72 +97,43 @@
             <div style="font-weight: bold; margin-bottom: 5px;">Rincian Harga & Ukuran:</div>
             <div id="modalDesc" class="modal-desc-area"></div>
             
-            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">
-                <span>Pesan Lewat WhatsApp</span>
-            </a>
-
-            <button id="deleteBtn" class="btn btn-danger">Hapus Produk</button>
+            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">Order via WhatsApp</a>
+            <button id="deleteBtn" class="btn btn-danger" style="opacity: 0.5;">Hapus Produk</button>
         </div>
     </div>
 </div>
 
 <script>
-    // GANTI NOMOR WHATSAPP ANDA DI SINI (Contoh: 628123456789)
-    const WHATSAPP_NUMBER = "6282295977519"; 
-
+    // 1. PENGATURAN AWAL
+    const WHATSAPP_NUMBER = "6282295977519"; // Ganti dengan nomor WA Anda
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
+    let currentFilter = 'Semua';
 
-    function render() {
+    // 2. RENDER KATALOG
+    function render(data = items) {
         const container = document.getElementById('catalog-grid');
         container.innerHTML = "";
-        items.forEach((item, index) => {
+        
+        const filteredData = currentFilter === 'Semua' 
+            ? data 
+            : data.filter(i => i.cat === currentFilter);
+
+        filteredData.forEach((item, index) => {
+            const originalIndex = items.indexOf(item);
             container.innerHTML += `
-                <div class="card" onclick="openModal(${index})">
-                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
+                <div class="card" onclick="openModal(${originalIndex})">
+                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
                     <h3>${item.name}</h3>
                 </div>
             `;
         });
     }
 
+    // 3. TAMBAH ITEM
     function addItem() {
         const name = document.getElementById('p-name').value;
         const img = document.getElementById('p-img').value;
         const cat = document.getElementById('p-cat').value;
         const desc = document.getElementById('p-desc').value;
 
-        if(name && img) {
-            items.push({ name, img, cat, desc });
-            saveData();
-            clearForm();
-        } else {
-            alert("Nama dan Gambar wajib diisi!");
-        }
-    }
-
-    function openModal(index) {
-        const item = items[index];
-        document.getElementById('modalImg').src = item.img;
-        document.getElementById('modalName').innerText = item.name;
-        document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalDesc').innerText = item.desc || "Belum ada rincian.";
-        
-        // Buat link WhatsApp otomatis
-        const textWA = `Halo, saya ingin bertanya/memesan produk: *${item.name}*`;
-        document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(textWA)}`;
-
-        document.getElementById('deleteBtn').onclick = function() { deleteItem(index); };
-        document.getElementById('productModal').style.display = "block";
-    }
-
-    function closeModal() { document.getElementById('productModal').style.display = "none"; }
-    function deleteItem(index) { if(confirm("Hapus?")) { items.splice(index, 1); saveData(); closeModal(); } }
-    function saveData() { localStorage.setItem('catalog_db', JSON.stringify(items)); render(); }
-    function clearForm() { ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = ""); }
-    window.onclick = function(e) { if (e.target == document.getElementById('productModal')) closeModal(); }
-
-    render();
-</script>
-
-</body>
-</html>
+        if(name && img)
