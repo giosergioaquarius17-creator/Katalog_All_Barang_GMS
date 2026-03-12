@@ -6,10 +6,7 @@
     <title>GMS_KATALOG BARANG</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#16a34a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="image_20a079.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -18,7 +15,6 @@
             --whatsapp: #25d366;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --secondary: #64748b;
             --bg-gradient: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
             --text: #14532d;
         }
@@ -27,7 +23,6 @@
             font-family: 'Inter', sans-serif; 
             background: var(--bg-gradient);
             background-attachment: fixed;
-            color: var(--text); 
             margin: 0; padding: 20px; min-height: 100vh;
         }
 
@@ -35,65 +30,48 @@
         
         .header-container {
             display: flex; align-items: center; justify-content: center;
-            gap: 15px; margin-bottom: 35px; cursor: pointer; user-select: none;
+            gap: 15px; margin-bottom: 35px; cursor: pointer;
         }
 
-        .main-logo { height: 60px; width: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .main-logo { height: 60px; width: auto; }
 
         h1 { 
             text-align: center; color: var(--primary-dark); font-weight: 900; 
             margin: 0; text-transform: uppercase; letter-spacing: 2px;
-            text-shadow: 1px 1px 0px white, 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         #adminPanel { 
-            display: none; background: rgba(255, 255, 255, 0.9); 
-            backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; 
-            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(22, 163, 74, 0.1);
-            border: 1px solid rgba(255,255,255,0.6);
+            display: none; background: white; padding: 25px; border-radius: 20px; 
+            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select, textarea { 
-            width: 100%; padding: 12px; border: 1px solid #bdf1d4; 
-            border-radius: 10px; box-sizing: border-box; font-family: inherit;
-        }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
 
-        .btn { border: none; padding: 14px 24px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
+        .btn { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; color: white; transition: 0.3s; }
         .btn-primary { background: var(--primary); width: 100%; }
-        .btn-warning { background: var(--warning); color: white; margin-top: 10px; width: 100%; }
-        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; font-size: 16px; }
-        .btn-danger { background: var(--danger); margin-top: 10px; font-size: 12px; width: 100%; }
-        .btn-cancel { background: var(--secondary); margin-top: 10px; width: 100%; }
-        
-        .admin-tools { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(22, 163, 74, 0.1); padding-top: 20px; }
-        .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 10px; }
+        .btn-warning { background: var(--warning); margin-top: 10px; width: 100%; }
+        .btn-danger { background: var(--danger); margin-top: 10px; width: 100%; }
 
-        .filter-section { margin-bottom: 35px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn { padding: 10px 22px; border-radius: 50px; border: none; background: white; color: var(--primary); cursor: pointer; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .filter-section { margin-bottom: 35px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; border-radius: 50px; border: none; background: white; cursor: pointer; }
         .filter-btn.active { background: var(--primary); color: white; }
 
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s; }
-        .card:hover { transform: translateY(-10px); }
-        .card img { width: 100%; height: 190px; object-fit: cover; }
-        .card h3 { padding: 15px; margin: 0; font-size: 14px; text-align: center; font-weight: 800; color: var(--text); }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #f0fdf4; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card h3 { padding: 12px; margin: 0; font-size: 13px; text-align: center; text-transform: uppercase; color: var(--text); }
 
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(6, 78, 59, 0.6); backdrop-filter: blur(10px); }
-        .modal-content { background: white; margin: 3vh auto; border-radius: 24px; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 20px; cursor: pointer; z-index: 10; background: #f1f5f9; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-        .modal-body { padding: 30px; }
-        .modal-img { width: 100%; height: 320px; object-fit: contain; background: #f0fdf4; }
-        .modal-desc-area { white-space: pre-wrap; line-height: 1.7; color: #1e293b; background: #f8fafc; padding: 20px; border-radius: 15px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
-        .modal-badge { background: #dcfce7; color: var(--primary-dark); padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-
-        #importFile { display: none; }
-        #editLabel { display: none; color: var(--warning); font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 5vh auto; border-radius: 20px; max-width: 450px; position: relative; overflow: hidden; }
+        .modal-body { padding: 20px; }
+        .modal-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; }
+        .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 14px; color: #334155; }
+        
+        .btn-wa { background: var(--whatsapp); display: block; text-decoration: none; text-align: center; margin-top: 15px; padding: 12px; border-radius: 10px; color: white; font-weight: bold; }
 
         @media (max-width: 600px) {
-            .header-container { flex-direction: column; gap: 5px; }
-            .main-logo { height: 50px; }
-            h1 { font-size: 1.4rem; }
+            .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
     </style>
 </head>
@@ -106,7 +84,7 @@
     </div>
 
     <div id="adminPanel">
-        <div id="editLabel">⚠️ MODE EDIT AKTIF</div>
+        <h3 id="formTitle">Tambah Produk Baru (Supabase)</h3>
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
             <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: male.jpg)">
@@ -114,16 +92,10 @@
                 <option value="Pipa">Pipa</option>
                 <option value="Aksesoris">Aksesoris</option>
                 <option value="Fitting">Fitting</option>
-                <option value="Lainnya">Lainnya</option>
             </select>
             <textarea id="p-desc" style="height: 100px;" placeholder="Rincian harga & ukuran..."></textarea>
-            <button id="saveBtn" class="btn btn-primary" onclick="addItem()">Simpan ke Katalog</button>
-            <button id="cancelEditBtn" class="btn btn-cancel" style="display:none;" onclick="resetForm()">Batal Edit</button>
-            <div class="admin-tools">
-                <button class="btn btn-tool" onclick="downloadBackup()">💾 Backup</button>
-                <label for="importFile" class="btn btn-tool">📂 Restore</label>
-                <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-            </div>
+            <button id="saveBtn" class="btn btn-primary" onclick="addItem()">Simpan ke Database</button>
+            <button id="cancelBtn" class="btn btn-danger" style="display:none;" onclick="resetForm()">Batal</button>
         </div>
     </div>
 
@@ -139,127 +111,131 @@
 
 <div id="productModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
         <img id="modalImg" class="modal-img" src="">
         <div class="modal-body">
-            <span id="modalCat" class="modal-badge"></span>
-            <h2 id="modalName" style="margin: 15px 0 10px 0;"></h2>
+            <h2 id="modalName" style="margin:0;"></h2>
             <div id="modalDesc" class="modal-desc-area"></div>
             <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
             
-            <div id="adminActions" style="display:none; margin-top:20px; border-top:1px dashed #ccc; padding-top:15px;">
-                <button class="btn btn-warning" onclick="editItem()">Edit Data Produk</button>
+            <div id="adminActions" style="display:none; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+                <button class="btn btn-warning" onclick="editItem()">Edit Data</button>
                 <button class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
             </div>
+            <button class="btn" style="background:#666; width:100%; margin-top:10px;" onclick="closeModal()">Tutup</button>
         </div>
     </div>
 </div>
 
 <script>
-    const WHATSAPP_NUMBER = "6282295977519"; // Ganti dengan nomor WA Anda
-    let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
+    // --- KONFIGURASI SUPABASE ---
+    const SUPABASE_URL = 'https://lqoynorzujcmzyynxmbw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_eODBvHQjNMS1sZgw_1usHA_yO8YEjLg';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let items = [];
     let currentFilter = 'Semua';
     let isAdmin = false;
     let clickCount = 0;
-    let currentItemIndex = null;
+    let currentItemId = null;
     let isEditing = false;
-    let editIndex = null;
 
     function activateAdminMode() {
         clickCount++;
         if (clickCount === 5) {
-            const pin = prompt("Masukkan PIN Admin:");
-            if (pin === "2020") { // Gunakan PIN yang sudah Anda buat
+            const pin = prompt("PIN Admin:");
+            if (pin === "2020") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = "block";
-                alert("Mode Admin Aktif!");
-            } else {
-                alert("PIN Salah!");
+                alert("Mode Admin Supabase Aktif!");
             }
             clickCount = 0;
         }
-        setTimeout(() => { clickCount = 0; }, 3000);
+    }
+
+    // Ambil Data dari Supabase
+    async function fetchData() {
+        const { data, error } = await _supabase.from('products').select('*');
+        if (error) console.log('Error:', error);
+        else {
+            items = data;
+            render();
+        }
     }
 
     function render() {
         const container = document.getElementById('catalog-grid');
         container.innerHTML = "";
-        const data = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
-        data.forEach((item) => {
-            const idx = items.indexOf(item);
+        const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
+        filtered.forEach((item) => {
             container.innerHTML += `
-                <div class="card" onclick="openModal(${idx})">
-                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
+                <div class="card" onclick="openModal('${item.id}')">
+                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                     <h3>${item.name}</h3>
                 </div>`;
         });
     }
 
-    function addItem() {
+    async function addItem() {
         const name = document.getElementById('p-name').value;
         const img = document.getElementById('p-img').value;
         const cat = document.getElementById('p-cat').value;
         const desc = document.getElementById('p-desc').value;
 
-        if(!name || !img) return alert("Nama dan Gambar wajib diisi!");
+        if(!name || !img) return alert("Isi nama & gambar!");
 
         if (isEditing) {
-            items[editIndex] = { name, img, cat, desc };
+            await _supabase.from('products').update({ name, img, cat, desc }).eq('id', currentItemId);
         } else {
-            items.push({ name, img, cat, desc });
+            await _supabase.from('products').insert([{ name, img, cat, desc }]);
         }
-
-        saveData();
+        
+        fetchData();
         resetForm();
+        alert("Berhasil disimpan!");
     }
 
     function editItem() {
-        const item = items[currentItemIndex];
+        const item = items.find(i => i.id == currentItemId);
         isEditing = true;
-        editIndex = currentItemIndex;
-
         document.getElementById('p-name').value = item.name;
         document.getElementById('p-img').value = item.img;
         document.getElementById('p-cat').value = item.cat;
         document.getElementById('p-desc').value = item.desc;
-
-        document.getElementById('editLabel').style.display = "block";
-        document.getElementById('saveBtn').innerText = "Simpan Perubahan";
-        document.getElementById('cancelEditBtn').style.display = "block";
-        
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        document.getElementById('formTitle').innerText = "Edit Produk";
+        document.getElementById('cancelBtn').style.display = "block";
+        window.scrollTo(0,0);
         closeModal();
     }
 
-    function resetForm() {
-        isEditing = false;
-        editIndex = null;
-        ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
-        document.getElementById('editLabel').style.display = "none";
-        document.getElementById('saveBtn').innerText = "Simpan ke Katalog";
-        document.getElementById('cancelEditBtn').style.display = "none";
-    }
-
-    function deleteItem() {
-        if(confirm("Hapus produk ini?")) {
-            items.splice(currentItemIndex, 1);
-            saveData();
+    async function deleteItem() {
+        if(confirm("Hapus produk ini secara permanen?")) {
+            await _supabase.from('products').delete().eq('id', currentItemId);
+            fetchData();
             closeModal();
         }
     }
 
-    function openModal(index) {
-        currentItemIndex = index;
-        const item = items[index];
+    function resetForm() {
+        isEditing = false;
+        currentItemId = null;
+        ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+        document.getElementById('formTitle').innerText = "Tambah Produk Baru";
+        document.getElementById('cancelBtn').style.display = "none";
+    }
+
+    function openModal(id) {
+        currentItemId = id;
+        const item = items.find(i => i.id == id);
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
-        document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin untuk rincian.";
-        document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Halo, info untuk *${item.name}*`;
+        document.getElementById('modalDesc').innerText = item.desc;
+        document.getElementById('waBtn').href = `https://wa.me/6282295977519?text=Halo, info: ${item.name}`;
         document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
         document.getElementById('productModal').style.display = "block";
     }
 
+    function closeModal() { document.getElementById('productModal').style.display = "none"; }
+    
     function filterCat(cat, btn) {
         currentFilter = cat;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -267,23 +243,7 @@
         render();
     }
 
-    function saveData() { localStorage.setItem('catalog_db', JSON.stringify(items)); render(); }
-    function closeModal() { document.getElementById('productModal').style.display = "none"; }
-    
-    function downloadBackup() {
-        const blob = new Blob([JSON.stringify(items)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = "backup_gms.json"; a.click();
-    }
-
-    function importData(e) {
-        const r = new FileReader();
-        r.onload = (event) => { items = JSON.parse(event.target.result); saveData(); alert("Data dipulihkan!"); };
-        r.readAsText(e.target.files[0]);
-    }
-
-    window.onclick = (e) => { if (e.target == document.getElementById('productModal')) closeModal(); }
-    render();
+    fetchData(); // Ambil data saat pertama kali buka
 </script>
 </body>
 </html>
