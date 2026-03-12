@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Elegant Background</title>
+    <title>Katalog Pro - Green Edition</title>
     <style>
         :root {
-            --primary: #2563eb;
+            /* Warna Hijau Terinspirasi dari Logo */
+            --primary: #16a34a; 
+            --primary-dark: #15803d;
             --whatsapp: #25d366;
             --danger: #ef4444;
             --secondary: #64748b;
-            /* Warna Background Baru */
-            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
-            --text: #1e293b;
+            /* Gradasi Hijau Modern */
+            --bg-gradient: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+            --text: #14532d;
         }
 
         body { 
             font-family: 'Inter', sans-serif; 
-            /* Menerapkan Background Gradient */
             background: var(--bg-gradient);
-            background-attachment: fixed; /* Background tetap diam saat di-scroll */
+            background-attachment: fixed;
             color: var(--text); 
             margin: 0; 
             padding: 20px; 
@@ -28,70 +29,74 @@
 
         .container { max-width: 1100px; margin: auto; }
         
-        /* Panel Form dengan efek Glassmorphism tipis */
+        /* Panel Form Modern */
         .panel { 
-            background: rgba(255, 255, 255, 0.9); 
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px);
             padding: 25px; 
-            border-radius: 16px; 
+            border-radius: 20px; 
             margin-bottom: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.1);
+            border: 1px solid rgba(255,255,255,0.6);
         }
 
         h1 { 
             text-align: center; 
-            color: #1e3a8a; 
+            color: var(--primary-dark); 
             font-weight: 800; 
             margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            letter-spacing: -1px;
         }
         
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         input, select, textarea { 
-            width: 100%; padding: 12px; border: 1px solid #cbd5e1; 
-            border-radius: 8px; box-sizing: border-box; font-family: inherit;
-            background: white;
+            width: 100%; padding: 12px; border: 1px solid #bdf1d4; 
+            border-radius: 10px; box-sizing: border-box; font-family: inherit;
+            background: white; transition: 0.3s;
         }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1); }
 
-        .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-primary { background: var(--primary); width: 100%; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; }
-        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; }
+        .btn { border: none; padding: 14px 24px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-primary { background: var(--primary); width: 100%; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
         
-        .admin-tools { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-        .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 8px; }
+        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; font-size: 16px; }
+        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; opacity: 0.8; }
+        
+        .admin-tools { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(22, 163, 74, 0.1); padding-top: 20px; }
+        .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 10px; opacity: 0.9; }
 
         /* FILTER KATEGORI */
-        .filter-section { margin-bottom: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .filter-section { margin-bottom: 35px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .filter-btn { 
-            padding: 10px 20px; border-radius: 30px; border: none; 
-            background: white; color: var(--secondary); cursor: pointer; 
-            font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;
+            padding: 10px 22px; border-radius: 50px; border: none; 
+            background: white; color: var(--primary); cursor: pointer; 
+            font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s;
         }
-        .filter-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
+        .filter-btn.active { background: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 6px 15px rgba(22, 163, 74, 0.3); }
 
         /* GRID KATALOG */
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 25px; }
         .card { 
-            background: white; border-radius: 16px; overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;
-            border: 1px solid rgba(255,255,255,0.8);
+            background: white; border-radius: 18px; overflow: hidden; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,1);
         }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 180px; object-fit: cover; }
-        .card h3 { padding: 15px; margin: 0; font-size: 14px; text-align: center; color: var(--text); font-weight: 700; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 35px rgba(22, 163, 74, 0.12); }
+        .card img { width: 100%; height: 190px; object-fit: cover; }
+        .card h3 { padding: 15px; margin: 0; font-size: 15px; text-align: center; color: var(--text); font-weight: 800; }
 
         /* MODAL */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
-        .modal-content { background: white; margin: 2vh auto; border-radius: 20px; max-width: 500px; position: relative; animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: #64748b; z-index: 10; background: rgba(255,255,255,0.8); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(6, 78, 59, 0.6); backdrop-filter: blur(10px); }
+        .modal-content { background: white; margin: 3vh auto; border-radius: 24px; max-width: 500px; position: relative; animation: modalAnim 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 90vh; overflow-y: auto; }
+        @keyframes modalAnim { from {transform: translateY(30px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
         
-        .modal-body { padding: 25px; }
-        .modal-img { width: 100%; height: 320px; object-fit: contain; background: #f8fafc; border-bottom: 1px solid #f1f5f9; }
-        .modal-desc-area { white-space: pre-wrap; line-height: 1.6; color: #334155; background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
-        .modal-badge { background: #dbeafe; color: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 20px; cursor: pointer; color: #64748b; z-index: 10; background: #f1f5f9; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        
+        .modal-body { padding: 30px; }
+        .modal-img { width: 100%; height: 320px; object-fit: contain; background: #f0fdf4; border-bottom: 2px solid #f0fdf4; }
+        .modal-desc-area { white-space: pre-wrap; line-height: 1.7; color: #1e293b; background: #f8fafc; padding: 20px; border-radius: 15px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
+        .modal-badge { background: #dcfce7; color: var(--primary-dark); padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
         
         #importFile { display: none; }
     </style>
@@ -99,24 +104,24 @@
 <body>
 
 <div class="container">
-    <h1>Katalog Digital Produk</h1>
+    <h1>Katalog Produk Interaktif</h1>
 
     <div class="panel">
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Nama File Gambar">
+            <input type="text" id="p-img" placeholder="Nama File Gambar (ex: pipa.jpg)">
             <select id="p-cat">
                 <option value="Pipa">Pipa</option>
                 <option value="Aksesoris Pipa">Aksesoris Pipa</option>
                 <option value="Fitting">Fitting</option>
                 <option value="Lainnya">Lainnya</option>
             </select>
-            <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Rincian Harga & Ukuran..."></textarea>
+            <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Isi rincian harga & ukuran di sini..."></textarea>
             <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
             
             <div class="admin-tools">
-                <button class="btn btn-tool" onclick="downloadBackup()">⬇️ Download Backup</button>
-                <label for="importFile" class="btn btn-tool">⬆️ Upload/Restore Data</label>
+                <button class="btn btn-tool" onclick="downloadBackup()">💾 Simpan Cadangan (Backup)</button>
+                <label for="importFile" class="btn btn-tool">📂 Muat Cadangan (Restore)</label>
                 <input type="file" id="importFile" accept=".json" onchange="importData(event)">
             </div>
         </div>
@@ -138,18 +143,18 @@
         <img id="modalImg" class="modal-img" src="">
         <div class="modal-body">
             <span id="modalCat" class="modal-badge"></span>
-            <h2 id="modalName" style="margin: 15px 0 10px 0; color: #1e293b;"></h2>
-            <div style="font-weight: bold; margin-bottom: 5px; color: #64748b; font-size: 13px;">Rincian Harga & Ukuran:</div>
+            <h2 id="modalName" style="margin: 15px 0 10px 0; color: #064e3b;"></h2>
+            <div style="font-weight: 700; margin-bottom: 5px; color: #64748b; font-size: 13px;">Rincian Harga & Ukuran:</div>
             <div id="modalDesc" class="modal-desc-area"></div>
             
-            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">Order via WhatsApp</a>
-            <button id="deleteBtn" class="btn btn-danger" style="opacity: 0.6;">Hapus Produk dari Database</button>
+            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
+            <button id="deleteBtn" class="btn btn-danger">Hapus Produk</button>
         </div>
     </div>
 </div>
 
 <script>
-    const WHATSAPP_NUMBER = "6282295977519"; 
+    const WHATSAPP_NUMBER = "6282295977519"; // GANTI DENGAN NOMOR ANDA
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
     let currentFilter = 'Semua';
 
@@ -176,7 +181,7 @@
             items.push({ name, img, cat, desc });
             saveData();
             ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
-        }
+        } else { alert("Lengkapi Nama dan Gambar!"); }
     }
 
     function filterCat(cat, btn) {
@@ -191,12 +196,12 @@
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
         document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalDesc').innerText = item.desc || "Silakan hubungi admin untuk rincian.";
+        document.getElementById('modalDesc').innerText = item.desc || "Silakan hubungi admin.";
         
-        const textWA = `Halo Admin, saya ingin memesan: *${item.name}*`;
+        const textWA = `Halo Admin, saya ingin bertanya tentang produk: *${item.name}*`;
         document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(textWA)}`;
 
-        document.getElementById('deleteBtn').onclick = () => { if(confirm("Hapus produk ini?")) { items.splice(index, 1); saveData(); closeModal(); }};
+        document.getElementById('deleteBtn').onclick = () => { if(confirm("Hapus produk?")) { items.splice(index, 1); saveData(); closeModal(); }};
         document.getElementById('productModal').style.display = "block";
     }
 
@@ -204,7 +209,7 @@
         const blob = new Blob([JSON.stringify(items)], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = "backup_katalog.json"; a.click();
+        a.href = url; a.download = "katalog_backup.json"; a.click();
     }
 
     function importData(event) {
@@ -213,6 +218,7 @@
             try {
                 items = JSON.parse(e.target.result);
                 saveData();
+                alert("Data berhasil dipulihkan!");
             } catch (err) { alert("File tidak valid!"); }
         };
         reader.readAsText(event.target.files[0]);
