@@ -87,33 +87,46 @@
             .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             h1 { font-size: 20px; }
         }
-        .filter-group-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 25px;
-}
+      .filter-group-container {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+          flex-wrap: wrap; /* Agar otomatis pindah baris jika layar HP kecil */
+       }
 
-.filter-dropdown {
-    position: relative;
-    display: inline-block;
-}
+      .filter-dropdown {
+          position: relative;
+          display: inline-block;
+      }
+
+     .dropdown-content {
+         display: none; /* Sembunyi secara default */
+         position: absolute;
+         background-color: white;
+         min-width: 180px;
+         box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+         z-index: 999; /* Pastikan di atas elemen lain */
+         border-radius: 10px;
+         padding: 10px;
+         top: 100%; /* Pas di bawah tombol */
+         left: 0;
+      }
+
+     /* Munculkan menu saat class 'show' ditambahkan oleh JS */
+     .dropdown-content.show {
+        display: flex !important;
+        flex-direction: column;
+        gap: 8px;
+      }
 
 .filter-group-btn {
     background: white;
-    color: var(--primary-dark);
-    padding: 12px 20px;
-    border: 2px solid var(--primary);
-    border-radius: 12px;
+    border: 2px solid #2e7d32;
+    padding: 10px 15px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 14px;
-    transition: 0.3s;
-}
-
-.filter-group-btn:hover {
-    background: var(--primary);
-    color: white;
 }
 
 .dropdown-content {
@@ -176,7 +189,7 @@
     <div class="filter-group-container">
     <div class="filter-dropdown">
         <button class="filter-group-btn" onclick="toggleDropdown('umum')">📦 Material Umum ▼</button>
-        <div id="dropdown-umum" class="dropdown-content"> ... </div>
+        <div id="dropdown-umum" class="dropdown-content">
             <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua Barang</button>
             <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
             <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
@@ -186,12 +199,13 @@
 
     <div class="filter-dropdown">
         <button class="filter-group-btn" onclick="toggleDropdown('khusus')">💎 Material Khusus ▼</button>
-        <div id="dropdown-khusus" class="dropdown-content"> ... </div>
+        <div id="dropdown-khusus" class="dropdown-content">
             <button class="filter-btn" onclick="filterCat('Special Material', this)">Special Material</button>
-            </div>
+        </div>
     </div>
 </div>
-    <div id="catalog-grid" class="catalog-grid"></div>
+
+<div id="catalog-grid" class="catalog-grid"></div>
 
 <script>
     // --- KONFIGURASI (GANTI SESUAI DATA ANDA) ---
