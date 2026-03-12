@@ -183,14 +183,27 @@
     }
 
     async function fetchData() {
-        const { data, error } = await _supabase.from('products').select('*');
-        if (!error) {
-            items = data;
-            render();
-        } else {
-            console.error("Error ambil data:", error);
-        }
+    const { data, error } = await _supabase.from('products').select('*');
+    if (!error) {
+        // Pastikan kita menyimpan data ID dari database ke variabel local
+        items = data; 
+        render();
     }
+}
+
+function openModal(id) {
+    // Pastikan ID yang diterima dikonversi ke tipe yang sama (Number)
+    currentItemId = Number(id); 
+    const item = items.find(i => Number(i.id) === currentItemId);
+    
+    if (item) {
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalDesc').innerText = item.desc;
+        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
+        document.getElementById('productModal').style.display = "block";
+    }
+}
 
     function searchProduct() {
         searchQuery = document.getElementById('searchInput').value.toLowerCase();
