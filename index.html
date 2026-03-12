@@ -176,7 +176,7 @@
     <div class="filter-group-container">
     <div class="filter-dropdown">
         <button class="filter-group-btn" onclick="toggleDropdown('umum')">📦 Material Umum ▼</button>
-        <div id="dropdown-umum" class="dropdown-content">
+        <div id="dropdown-umum" class="dropdown-content"> ... </div>
             <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua Barang</button>
             <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
             <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
@@ -186,7 +186,7 @@
 
     <div class="filter-dropdown">
         <button class="filter-group-btn" onclick="toggleDropdown('khusus')">💎 Material Khusus ▼</button>
-        <div id="dropdown-khusus" class="dropdown-content">
+        <div id="dropdown-khusus" class="dropdown-content"> ... </div>
             <button class="filter-btn" onclick="filterCat('Special Material', this)">Special Material</button>
             </div>
     </div>
@@ -406,6 +406,32 @@ filterCat = function(cat, btn) {
     originalFilterCat(cat, btn);
     document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
 };
+    // Fungsi untuk membuka/tutup menu kategori (dropdown)
+function toggleDropdown(type) {
+    const umum = document.getElementById('dropdown-umum');
+    const khusus = document.getElementById('dropdown-khusus');
+
+    if (type === 'umum') {
+        umum.classList.toggle('show');
+        if (khusus) khusus.classList.remove('show'); // Tutup yang lain jika ada
+    } else if (type === 'khusus') {
+        khusus.classList.toggle('show');
+        if (umum) umum.classList.remove('show'); // Tutup yang lain jika ada
+    }
+}
+
+// Menutup dropdown otomatis jika mengeklik di luar menu
+window.onclick = function(event) {
+    if (!event.target.matches('.filter-group-btn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
 </script>
 </body>
 </html>
