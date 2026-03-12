@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Hidden Admin</title>
+    <title>Katalog Pro - Green Edition</title>
     <style>
         :root {
+            /* Warna Tema Hijau */
             --primary: #16a34a; 
             --primary-dark: #15803d;
             --whatsapp: #25d366;
             --danger: #ef4444;
             --secondary: #64748b;
+            /* Background Gradasi */
             --bg-gradient: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
             --text: #14532d;
         }
@@ -25,10 +27,37 @@
 
         .container { max-width: 1100px; margin: auto; }
         
-        /* SEMBUNYIKAN PANEL ADMIN SECARA DEFAULT */
+        /* Header dengan Logo */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .main-logo {
+            height: 60px;
+            width: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--primary-dark); 
+            font-weight: 900; 
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 0px white, 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Panel Admin Tersembunyi */
         #adminPanel { 
             display: none; 
-            background: rgba(255, 255, 255, 0.9); 
+            background: rgba(255, 255, 255, 0.85); 
             backdrop-filter: blur(12px);
             padding: 25px; border-radius: 20px; 
             margin-bottom: 30px; 
@@ -36,42 +65,40 @@
             border: 1px solid rgba(255,255,255,0.6);
         }
 
-        /* Tombol Hapus juga disembunyikan secara default */
-        #deleteBtn { display: none; }
-
-        h1 { 
-    text-align: center; 
-    color: var(--primary-dark); 
-    font-weight: 900; /* Lebih tebal */
-    margin-bottom: 30px; 
-    cursor: pointer; 
-    user-select: none;
-    text-transform: uppercase; /* Membuat huruf kapital semua */
-    letter-spacing: 2px; /* Memberi jarak antar huruf agar elegan */
-    text-shadow: 1px 1px 0px rgba(255,255,255,1), 2px 2px 4px rgba(0,0,0,0.1); /* Efek timbul halus */
-}
-        
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #bdf1d4; border-radius: 10px; box-sizing: border-box; font-family: inherit; }
+        input, select, textarea { 
+            width: 100%; padding: 12px; border: 1px solid #bdf1d4; 
+            border-radius: 10px; box-sizing: border-box; font-family: inherit;
+        }
 
         .btn { border: none; padding: 14px 24px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-primary { background: var(--primary); width: 100%; }
+        .btn-primary { background: var(--primary); width: 100%; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2); }
         .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; }
-        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; opacity: 0.8; }
+        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; display: none; }
         
         .admin-tools { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(22, 163, 74, 0.1); padding-top: 20px; }
         .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 10px; }
 
+        /* Filter Kategori */
         .filter-section { margin-bottom: 35px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn { padding: 10px 22px; border-radius: 50px; border: none; background: white; color: var(--primary); cursor: pointer; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .filter-btn { 
+            padding: 10px 22px; border-radius: 50px; border: none; 
+            background: white; color: var(--primary); cursor: pointer; 
+            font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
         .filter-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
 
+        /* Grid Produk */
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s; }
-        .card:hover { transform: translateY(-10px); }
+        .card { 
+            background: white; border-radius: 18px; overflow: hidden; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s;
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 35px rgba(22, 163, 74, 0.12); }
         .card img { width: 100%; height: 190px; object-fit: cover; }
         .card h3 { padding: 15px; margin: 0; font-size: 15px; text-align: center; color: var(--text); font-weight: 800; }
 
+        /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(6, 78, 59, 0.6); backdrop-filter: blur(10px); }
         .modal-content { background: white; margin: 3vh auto; border-radius: 24px; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
         .close { position: absolute; right: 20px; top: 15px; font-size: 20px; cursor: pointer; color: #64748b; background: #f1f5f9; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
@@ -79,13 +106,22 @@
         .modal-img { width: 100%; height: 320px; object-fit: contain; background: #f0fdf4; }
         .modal-desc-area { white-space: pre-wrap; line-height: 1.7; color: #1e293b; background: #f8fafc; padding: 20px; border-radius: 15px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
         .modal-badge { background: #dcfce7; color: var(--primary-dark); padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+
+        @media (max-width: 600px) {
+            .header-container { flex-direction: column; gap: 5px; }
+            .main-logo { height: 50px; }
+            h1 { font-size: 1.5rem; }
+        }
         #importFile { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 onclick="activateAdminMode()">GMS PRODUK PERPIPAAN</h1>
+    <div class="header-container" onclick="activateAdminMode()">
+        <img src="gmslogo.png" alt="Logo" class="main-logo">
+        <h1>GMS_KATALOG BARANG</h1>
+    </div>
 
     <div id="adminPanel">
         <div class="grid-form">
@@ -100,8 +136,8 @@
             <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Rincian harga & ukuran..."></textarea>
             <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
             <div class="admin-tools">
-                <button class="btn btn-tool" onclick="downloadBackup()">💾 Backup</button>
-                <label for="importFile" class="btn btn-tool">📂 Restore</label>
+                <button class="btn btn-tool" onclick="downloadBackup()">💾 Backup Data</button>
+                <label for="importFile" class="btn btn-tool">📂 Restore Data</label>
                 <input type="file" id="importFile" accept=".json" onchange="importData(event)">
             </div>
         </div>
@@ -126,35 +162,33 @@
             <h2 id="modalName" style="margin: 15px 0 10px 0;"></h2>
             <div id="modalDesc" class="modal-desc-area"></div>
             <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
-            <button id="deleteBtn" class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
+            <button id="deleteBtn" class="btn btn-danger" onclick="deleteItem()">Hapus Produk dari Database</button>
         </div>
     </div>
 </div>
 
 <script>
-    const WHATSAPP_NUMBER = "6282295977519"; 
+    const WHATSAPP_NUMBER = "6282295977519"; // Ganti dengan nomor WA Anda
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
     let currentFilter = 'Semua';
     let isAdmin = false;
     let clickCount = 0;
     let currentItemIndex = null;
 
-    // FUNGSI RAHASIA UNTUK MENGAKTIFKAN MODE ADMIN
     function activateAdminMode() {
         clickCount++;
-        if (clickCount === 5) { // Klik judul 5 kali
-            const pin = prompt("Masukkan PIN Keamanan:");
-            if (pin === "2020") { // Ganti PIN sesuai keinginan Anda
+        if (clickCount === 5) {
+            const pin = prompt("Masukkan PIN Admin:");
+            if (pin === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = "block";
-                document.getElementById('deleteBtn').style.display = "block";
                 alert("Mode Admin Aktif!");
             } else {
                 alert("PIN Salah!");
-                clickCount = 0;
             }
+            clickCount = 0;
         }
-        setTimeout(() => { clickCount = 0; }, 3000); // Reset hitungan jika jeda terlalu lama
+        setTimeout(() => { clickCount = 0; }, 3000);
     }
 
     function render() {
@@ -162,9 +196,9 @@
         container.innerHTML = "";
         const data = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
         data.forEach((item) => {
-            const originalIndex = items.indexOf(item);
+            const idx = items.indexOf(item);
             container.innerHTML += `
-                <div class="card" onclick="openModal(${originalIndex})">
+                <div class="card" onclick="openModal(${idx})">
                     <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
                     <h3>${item.name}</h3>
                 </div>`;
@@ -184,7 +218,7 @@
     }
 
     function deleteItem() {
-        if(confirm("Hapus produk ini secara permanen?")) {
+        if(confirm("Hapus produk ini?")) {
             items.splice(currentItemIndex, 1);
             saveData();
             closeModal();
@@ -199,8 +233,6 @@
         document.getElementById('modalCat').innerText = item.cat;
         document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin.";
         document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Halo, info untuk *${item.name}*`;
-        
-        // Tampilkan tombol hapus HANYA jika mode admin aktif
         document.getElementById('deleteBtn').style.display = isAdmin ? "block" : "none";
         document.getElementById('productModal').style.display = "block";
     }
@@ -217,11 +249,11 @@
     function downloadBackup() {
         const blob = new Blob([JSON.stringify(items)], {type: "application/json"});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = "katalog.json"; a.click();
+        const a = document.createElement('a'); a.href = url; a.download = "katalog_data.json"; a.click();
     }
     function importData(e) {
         const r = new FileReader();
-        r.onload = (event) => { items = JSON.parse(event.target.result); saveData(); };
+        r.onload = (event) => { items = JSON.parse(event.target.result); saveData(); alert("Data dipulihkan!"); };
         r.readAsText(e.target.files[0]);
     }
     window.onclick = (e) => { if (e.target == document.getElementById('productModal')) closeModal(); }
