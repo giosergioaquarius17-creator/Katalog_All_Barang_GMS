@@ -87,6 +87,60 @@
             .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             h1 { font-size: 20px; }
         }
+        .filter-group-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-group-btn {
+    background: white;
+    color: var(--primary-dark);
+    padding: 12px 20px;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.filter-group-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.dropdown-content {
+    display: none; /* Sembunyi secara default */
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    z-index: 100;
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+/* Munculkan dropdown saat aktif */
+.dropdown-content.show {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dropdown-content .filter-btn {
+    width: 100%;
+    text-align: left;
+    box-shadow: none;
+    border-radius: 8px;
+}
     </style>
 </head>
 <body>
@@ -119,30 +173,22 @@
         </div>
     </div>
 
-    <div class="filter-section">
-        <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua</button>
-        <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
-        <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
-        <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
-        <button class="filter-btn" onclick="filterCat('Special Material', this)">Special Material</button> </div>
+    <div class="filter-group-container">
+    <div class="filter-dropdown">
+        <button class="filter-group-btn" onclick="toggleDropdown('umum')">📦 Material Umum ▼</button>
+        <div id="dropdown-umum" class="dropdown-content">
+            <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua Barang</button>
+            <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
+            <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
+            <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
+        </div>
     </div>
 
-    <div id="catalog-grid" class="catalog-grid"></div>
-</div>
-
-<div id="productModal" class="modal">
-    <div class="modal-content">
-        <img id="modalImg" class="modal-img" src="">
-        <div class="modal-body">
-            <h2 id="modalName" style="margin:0; color: var(--primary-dark); text-align:center;"></h2>
-            <div id="modalDesc" class="modal-desc-area"></div>
-            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
-            <div id="adminActions" style="display:none; margin-top:15px; border-top:2px solid #eee; padding-top:10px;">
-                <button class="btn btn-warning" onclick="editItem()">Edit Data</button>
-                <button class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
+    <div class="filter-dropdown">
+        <button class="filter-group-btn" onclick="toggleDropdown('khusus')">💎 Material Khusus ▼</button>
+        <div id="dropdown-khusus" class="dropdown-content">
+            <button class="filter-btn" onclick="filterCat('Special Material', this)">Special Material</button>
             </div>
-            <button class="btn btn-close" onclick="closeModal()">Tutup</button>
-        </div>
     </div>
 </div>
 
@@ -335,6 +381,32 @@ function openModal(id) {
     }
 
     fetchData();
+    function toggleDropdown(type) {
+    const umum = document.getElementById('dropdown-umum');
+    const khusus = document.getElementById('dropdown-khusus');
+
+    if (type === 'umum') {
+        umum.classList.toggle('show');
+        khusus.classList.remove('show'); // Tutup yang lain
+    } else {
+        khusus.classList.toggle('show');
+        umum.classList.remove('show'); // Tutup yang lain
+    }
+}
+
+// Menutup dropdown otomatis jika mengeklik di luar tombol
+window.onclick = function(event) {
+    if (!event.target.matches('.filter-group-btn')) {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+}
+
+// Modifikasi sedikit fungsi filterCat agar dropdown tertutup setelah kategori dipilih
+const originalFilterCat = filterCat;
+filterCat = function(cat, btn) {
+    originalFilterCat(cat, btn);
+    document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+};
 </script>
 </body>
 </html>
