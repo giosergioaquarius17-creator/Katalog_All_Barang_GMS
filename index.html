@@ -46,7 +46,7 @@
         }
 
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-family: inherit; }
 
         .btn { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; color: white; transition: 0.3s; }
         .btn-primary { background: var(--primary); width: 100%; }
@@ -54,19 +54,20 @@
         .btn-danger { background: var(--danger); margin-top: 10px; width: 100%; }
 
         .filter-section { margin-bottom: 35px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .filter-btn { padding: 10px 20px; border-radius: 50px; border: none; background: white; cursor: pointer; }
+        .filter-btn { padding: 10px 20px; border-radius: 50px; border: none; background: white; cursor: pointer; font-weight: bold; color: var(--primary); }
         .filter-btn.active { background: var(--primary); color: white; }
 
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #f0fdf4; }
+        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #f0fdf4; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; }
         .card h3 { padding: 12px; margin: 0; font-size: 13px; text-align: center; text-transform: uppercase; color: var(--text); }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .modal-content { background: white; margin: 5vh auto; border-radius: 20px; max-width: 450px; position: relative; overflow: hidden; }
+        .modal-content { background: white; margin: 5vh auto; border-radius: 20px; max-width: 450px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .modal-body { padding: 20px; }
         .modal-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; }
-        .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 14px; color: #334155; }
+        .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 14px; color: #334155; line-height: 1.5; border: 1px solid #e2e8f0; }
         
         .btn-wa { background: var(--whatsapp); display: block; text-decoration: none; text-align: center; margin-top: 15px; padding: 12px; border-radius: 10px; color: white; font-weight: bold; }
 
@@ -84,10 +85,10 @@
     </div>
 
     <div id="adminPanel">
-        <h3 id="formTitle">Tambah Produk Baru (Supabase)</h3>
+        <h3 id="formTitle" style="margin-top:0;">Tambah Produk Baru</h3>
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: male.jpg)">
+            <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: adaptor.jpg)">
             <select id="p-cat">
                 <option value="Pipa">Pipa</option>
                 <option value="Aksesoris">Aksesoris</option>
@@ -95,7 +96,7 @@
             </select>
             <textarea id="p-desc" style="height: 100px;" placeholder="Rincian harga & ukuran..."></textarea>
             <button id="saveBtn" class="btn btn-primary" onclick="addItem()">Simpan ke Database</button>
-            <button id="cancelBtn" class="btn btn-danger" style="display:none;" onclick="resetForm()">Batal</button>
+            <button id="cancelBtn" class="btn btn-danger" style="display:none;" onclick="resetForm()">Batal Edit</button>
         </div>
     </div>
 
@@ -113,7 +114,7 @@
     <div class="modal-content">
         <img id="modalImg" class="modal-img" src="">
         <div class="modal-body">
-            <h2 id="modalName" style="margin:0;"></h2>
+            <h2 id="modalName" style="margin:0; color: var(--primary-dark);"></h2>
             <div id="modalDesc" class="modal-desc-area"></div>
             <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
             
@@ -121,15 +122,17 @@
                 <button class="btn btn-warning" onclick="editItem()">Edit Data</button>
                 <button class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
             </div>
-            <button class="btn" style="background:#666; width:100%; margin-top:10px;" onclick="closeModal()">Tutup</button>
+            <button class="btn" style="background:#64748b; width:100%; margin-top:10px;" onclick="closeModal()">Tutup</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- KONFIGURASI SUPABASE ---
+    // --- KONFIGURASI ---
+    const NO_WHATSAPP = "6282295977519"; // GANTI DENGAN NOMOR ANDA
     const SUPABASE_URL = 'https://lqoynorzujcmzyynxmbw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_eODBvHQjNMS1sZgw_1usHA_yO8YEjLg';
+    
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let items = [];
@@ -142,7 +145,7 @@
     function activateAdminMode() {
         clickCount++;
         if (clickCount === 5) {
-            const pin = prompt("PIN Admin:");
+            const pin = prompt("Masukkan PIN Admin:");
             if (pin === "2020") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = "block";
@@ -150,49 +153,32 @@
             }
             clickCount = 0;
         }
+        setTimeout(() => { clickCount = 0; }, 3000);
     }
 
-    // Ambil Data dari Supabase
     async function fetchData() {
-        const { data, error } = await _supabase.from('products').select('*');
-        if (error) console.log('Error:', error);
-        else {
+        const { data, error } = await _supabase.from('products').select('*').order('id', { ascending: false });
+        if (error) {
+            console.error('Gagal mengambil data:', error);
+        } else {
             items = data;
             render();
         }
     }
 
-function render() {
-    const container = document.getElementById('catalog-grid');
-    container.innerHTML = "";
-    const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
-    
-    filtered.forEach((item) => {
-        // Kita pastikan menggunakan item.id yang asli dari Supabase
-        container.innerHTML += `
-            <div class="card" onclick="openModal('${item.id}')">
-                <img src="${item.img}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
-                <h3>${item.name}</h3>
-            </div>`;
-    });
-}
-
-function openModal(id) {
-    currentItemId = id;
-    // Mencari item berdasarkan ID string/angka yang unik
-    const item = items.find(i => String(i.id) === String(id));
-    
-    if (item) {
-        document.getElementById('modalImg').src = item.img;
-        document.getElementById('modalName').innerText = item.name;
-        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin untuk detail.";
-        document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya tertarik dengan: *${item.name}*`;
-        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
-        document.getElementById('productModal').style.display = "block";
-    } else {
-        console.error("Data produk tidak ditemukan untuk ID:", id);
+    function render() {
+        const container = document.getElementById('catalog-grid');
+        container.innerHTML = "";
+        const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
+        
+        filtered.forEach((item) => {
+            container.innerHTML += `
+                <div class="card" onclick="openModal('${item.id}')">
+                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Tidak+Ditemukan'">
+                    <h3>${item.name}</h3>
+                </div>`;
+        });
     }
-}
 
     async function addItem() {
         const name = document.getElementById('p-name').value;
@@ -200,61 +186,76 @@ function openModal(id) {
         const cat = document.getElementById('p-cat').value;
         const desc = document.getElementById('p-desc').value;
 
-        if(!name || !img) return alert("Isi nama & gambar!");
+        if(!name || !img) return alert("Nama dan Gambar wajib diisi!");
 
         if (isEditing) {
             await _supabase.from('products').update({ name, img, cat, desc }).eq('id', currentItemId);
+            alert("Produk berhasil diperbarui!");
         } else {
             await _supabase.from('products').insert([{ name, img, cat, desc }]);
+            alert("Produk berhasil ditambahkan!");
         }
         
-        fetchData();
         resetForm();
-        alert("Berhasil disimpan!");
+        fetchData();
+    }
+
+    function openModal(id) {
+        currentItemId = id;
+        // Mencocokkan ID dengan aman (mengonversi ke String untuk perbandingan)
+        const item = items.find(i => String(i.id) === String(id));
+        
+        if (item) {
+            document.getElementById('modalImg').src = item.img;
+            document.getElementById('modalName').innerText = item.name;
+            document.getElementById('modalDesc').innerText = item.desc || "Silakan hubungi admin untuk info harga.";
+            document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya ingin tanya stok: *${item.name}*`;
+            document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
+            document.getElementById('productModal').style.display = "block";
+        }
     }
 
     function editItem() {
-        const item = items.find(i => i.id == currentItemId);
+        const item = items.find(i => String(i.id) === String(currentItemId));
+        if (!item) return;
+
         isEditing = true;
         document.getElementById('p-name').value = item.name;
         document.getElementById('p-img').value = item.img;
         document.getElementById('p-cat').value = item.cat;
         document.getElementById('p-desc').value = item.desc;
+        
         document.getElementById('formTitle').innerText = "Edit Produk";
+        document.getElementById('saveBtn').innerText = "Simpan Perubahan";
         document.getElementById('cancelBtn').style.display = "block";
-        window.scrollTo(0,0);
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
         closeModal();
     }
 
     async function deleteItem() {
-        if(confirm("Hapus produk ini secara permanen?")) {
+        if(confirm("Hapus produk ini secara permanen dari Database?")) {
             await _supabase.from('products').delete().eq('id', currentItemId);
-            fetchData();
             closeModal();
+            fetchData();
         }
     }
 
     function resetForm() {
         isEditing = false;
         currentItemId = null;
-        ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+        document.getElementById('p-name').value = "";
+        document.getElementById('p-img').value = "";
+        document.getElementById('p-desc').value = "";
         document.getElementById('formTitle').innerText = "Tambah Produk Baru";
+        document.getElementById('saveBtn').innerText = "Simpan ke Database";
         document.getElementById('cancelBtn').style.display = "none";
     }
 
-    function openModal(id) {
-        currentItemId = id;
-        const item = items.find(i => i.id == id);
-        document.getElementById('modalImg').src = item.img;
-        document.getElementById('modalName').innerText = item.name;
-        document.getElementById('modalDesc').innerText = item.desc;
-        document.getElementById('waBtn').href = `https://wa.me/6282295977519?text=Halo, info: ${item.name}`;
-        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
-        document.getElementById('productModal').style.display = "block";
+    function closeModal() {
+        document.getElementById('productModal').style.display = "none";
     }
 
-    function closeModal() { document.getElementById('productModal').style.display = "none"; }
-    
     function filterCat(cat, btn) {
         currentFilter = cat;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -262,7 +263,14 @@ function openModal(id) {
         render();
     }
 
-    fetchData(); // Ambil data saat pertama kali buka
+    // Menutup modal jika klik di luar kotak modal
+    window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target == modal) closeModal();
+    }
+
+    // Jalankan ambil data saat startup
+    fetchData();
 </script>
 </body>
 </html>
