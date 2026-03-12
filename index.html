@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Multi Harga</title>
+    <title>Katalog Pro - Order WhatsApp</title>
     <style>
         :root {
             --primary: #2563eb;
+            --whatsapp: #25d366;
             --danger: #ef4444;
             --bg: #f8fafc;
             --text: #1e293b;
@@ -23,8 +24,11 @@
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
         .full-width { grid-column: 1 / -1; }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
-        .btn:hover { opacity: 0.9; }
+        .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; color: white; }
+        .btn-primary { background: var(--primary); }
+        .btn-wa { background: var(--whatsapp); display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-top: 15px; }
+        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; opacity: 0.7; }
+        .btn:hover { opacity: 0.9; transform: scale(1.01); }
 
         /* GRID KATALOG UTAMA */
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
@@ -42,38 +46,30 @@
         .modal-body { padding: 25px; }
         .modal-img { width: 100%; height: 300px; object-fit: contain; background: #f1f5f9; }
         
-        /* CSS KHUSUS DESKRIPSI (Agar Enter Terbaca) */
         .modal-desc-area { 
-            white-space: pre-wrap; /* Menjaga spasi dan baris baru (Enter) */
-            line-height: 1.6; 
-            color: #334155; 
-            background: #f8fafc; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-top: 15px;
-            font-size: 14px;
+            white-space: pre-wrap; line-height: 1.6; color: #334155; background: #f8fafc; 
+            padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px;
         }
 
         .modal-badge { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; text-transform: uppercase; }
-        .btn-danger { background: var(--danger); width: 100%; padding: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; margin-top: 20px; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Katalog Produk</h1>
+    <h1>My Digital Catalog</h1>
 
     <div class="panel">
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="File Gambar (contoh: male-adaptor.jpg)">
+            <input type="text" id="p-img" placeholder="Nama File Gambar">
             <select id="p-cat">
                 <option value="Umum">Kategori: Umum</option>
                 <option value="Fitting">Fitting</option>
                 <option value="Elektronik">Elektronik</option>
             </select>
-            <textarea id="p-desc" class="full-width" style="height: 120px;" placeholder="Tulis rincian ukuran dan harga di sini. Contoh:&#10;Ukuran 1/2 : Rp 7.900&#10;Ukuran 3/4 : Rp 10.000"></textarea>
-            <button class="btn full-width" onclick="addItem()">Simpan ke Katalog</button>
+            <textarea id="p-desc" class="full-width" style="height: 120px;" placeholder="Tulis rincian harga di sini..."></textarea>
+            <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
         </div>
     </div>
 
@@ -90,12 +86,19 @@
             <div style="font-weight: bold; margin-bottom: 5px;">Rincian Harga & Ukuran:</div>
             <div id="modalDesc" class="modal-desc-area"></div>
             
-            <button id="deleteBtn" class="btn-danger">Hapus Produk</button>
+            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">
+                <span>Pesan Lewat WhatsApp</span>
+            </a>
+
+            <button id="deleteBtn" class="btn btn-danger">Hapus Produk</button>
         </div>
     </div>
 </div>
 
 <script>
+    // GANTI NOMOR WHATSAPP ANDA DI SINI (Contoh: 628123456789)
+    const WHATSAPP_NUMBER = "6282295977519"; 
+
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
 
     function render() {
@@ -122,7 +125,7 @@
             saveData();
             clearForm();
         } else {
-            alert("Nama Barang dan Gambar wajib diisi!");
+            alert("Nama dan Gambar wajib diisi!");
         }
     }
 
@@ -131,38 +134,21 @@
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
         document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalDesc').innerText = item.desc || "Belum ada rincian harga.";
+        document.getElementById('modalDesc').innerText = item.desc || "Belum ada rincian.";
         
+        // Buat link WhatsApp otomatis
+        const textWA = `Halo, saya ingin bertanya/memesan produk: *${item.name}*`;
+        document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(textWA)}`;
+
         document.getElementById('deleteBtn').onclick = function() { deleteItem(index); };
         document.getElementById('productModal').style.display = "block";
     }
 
-    function closeModal() {
-        document.getElementById('productModal').style.display = "none";
-    }
-
-    function deleteItem(index) {
-        if(confirm("Hapus produk ini?")) {
-            items.splice(index, 1);
-            saveData();
-            closeModal();
-        }
-    }
-
-    function saveData() {
-        localStorage.setItem('catalog_db', JSON.stringify(items));
-        render();
-    }
-
-    function clearForm() {
-        document.getElementById('p-name').value = "";
-        document.getElementById('p-img').value = "";
-        document.getElementById('p-desc').value = "";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('productModal')) closeModal();
-    }
+    function closeModal() { document.getElementById('productModal').style.display = "none"; }
+    function deleteItem(index) { if(confirm("Hapus?")) { items.splice(index, 1); saveData(); closeModal(); } }
+    function saveData() { localStorage.setItem('catalog_db', JSON.stringify(items)); render(); }
+    function clearForm() { ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = ""); }
+    window.onclick = function(e) { if (e.target == document.getElementById('productModal')) closeModal(); }
 
     render();
 </script>
