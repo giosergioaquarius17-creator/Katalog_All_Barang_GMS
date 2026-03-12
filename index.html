@@ -4,274 +4,282 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMS_KATALOG BARANG</title>
+    
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
-            --primary: #2e7d32;
-            --primary-dark: #1b5e20;
-            --accent: #ffa000;
-            --bg: #f1f8e9;
-            --wa-green: #25D366;
+            --primary: #16a34a; 
+            --primary-dark: #15803d;
+            --whatsapp: #25d366;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-gradient: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+            --text: #14532d;
         }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        
-        /* --- Header & Search --- */
-        .header { text-align: center; margin-bottom: 20px; }
-        .search-container { max-width: 500px; margin: 0 auto 20px; }
-        input#search-input { 
-            width: 100%; padding: 12px 20px; border-radius: 25px; 
-            border: 2px solid var(--primary); outline: none; font-size: 16px;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            margin: 0; padding: 20px; min-height: 100vh;
         }
 
-        /* --- Dropdown Filter System --- */
-        .filter-group-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        .filter-dropdown { position: relative; }
-        .filter-group-btn { 
-            background: white; border: 2px solid var(--primary); color: var(--primary-dark);
-            padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        /* --- CONTAINER & HEADER --- */
+        .container { max-width: 1100px; margin: auto; }
+        .header-container {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin-bottom: 35px; cursor: pointer;
         }
-        .filter-group-btn:hover { background: var(--primary); color: white; }
-        
-        .dropdown-content { 
-            display: none; position: absolute; background: white; min-width: 180px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 1000; border-radius: 12px; 
-            padding: 10px; top: 120%; left: 50%; transform: translateX(-50%);
-        }
-        .dropdown-content.show { display: flex; flex-direction: column; gap: 8px; }
-        .filter-btn { 
-            border: none; padding: 10px; border-radius: 8px; cursor: pointer; 
-            text-align: left; background: #f5f5f5; transition: 0.2s;
-        }
-        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; }
+        .main-logo { height: 60px; width: auto; }
+        h1 { text-align: center; color: var(--primary-dark); font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- Catalog Grid --- */
-        .catalog-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 20px; max-width: 1000px; margin: 0 auto; 
+        /* --- ADMIN PANEL --- */
+        #adminPanel { 
+            display: none; background: white; padding: 25px; border-radius: 20px; 
+            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .card { 
-            background: white; border-radius: 15px; overflow: hidden; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; 
-            text-align: center; transition: 0.3s; padding-bottom: 15px;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-family: inherit; box-sizing: border-box; }
+
+        /* --- BUTTONS --- */
+        .btn { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; color: white; transition: 0.3s; display: block; width: 100%; text-decoration: none; margin-top: 10px; }
+        .btn-primary { background: var(--primary); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--danger); }
+        .btn-wa { background: var(--whatsapp); text-align: center; }
+        .btn-close { background: #64748b; }
+
+        /* --- FILTER --- */
+        .filter-section { margin-bottom: 35px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; border-radius: 50px; border: none; background: white; cursor: pointer; font-weight: bold; color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: white; }
+
+        /* --- KATALOG GRID --- */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #f0fdf4; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; }
-        .card h3 { font-size: 16px; margin: 15px 10px 5px; }
-        .card p { font-size: 12px; color: #777; margin: 0; }
+        .card h3 { padding: 12px; margin: 0; font-size: 13px; text-align: center; text-transform: uppercase; color: var(--text); }
 
-        /* --- Admin Panel --- */
-        #admin-section { 
-            background: white; padding: 25px; border-radius: 15px; 
-            max-width: 500px; margin: 20px auto; border: 2px dashed var(--accent); 
-        }
-        .admin-form { display: flex; flex-direction: column; gap: 12px; }
-        .admin-form input, .admin-form select { padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
-        .btn-del { background: #ff5252; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; margin-top: 10px; font-size: 12px; }
-
-        /* --- Modal Detail --- */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); overflow: auto; }
+        /* --- MODAL (PERBAIKAN SCROLL) --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
         .modal-content { 
-            background: white; margin: 5% auto; padding: 25px; width: 90%; max-width: 450px; 
-            border-radius: 20px; text-align: center; position: relative; animation: slideDown 0.3s;
-        }
-        @keyframes slideDown { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #888; }
-        #modal-img { width: 100%; border-radius: 15px; margin-bottom: 15px; }
-        .btn-wa { 
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            background: var(--wa-green); color: white; padding: 12px 25px; 
-            border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 15px; transition: 0.3s;
-        }
-        .btn-wa:hover { background: #1eb954; transform: scale(1.05); }
+            background: white; margin: 2vh auto; border-radius: 20px; 
+            max-width: 450px; width: 90%; position: relative; 
+            overflow-y: auto; max-height: 95vh; /* Bisa di-scroll */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+            overflow-y: auto !important; 
+            -webkit-overflow-scrolling: touch; /* Halus untuk iPhone/Safari */
+            display: flex;
+            flex-direction: column;
+}
+        .modal-body { padding: 20px; }
+        .modal-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; }
+        .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 14px; color: #334155; line-height: 1.6; border: 1px solid #e2e8f0; }
 
-        /* --- Floating WA Button --- */
-        .floating-wa {
-            position: fixed; bottom: 25px; right: 25px; background: var(--wa-green);
-            color: white; width: 60px; height: 60px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1500; text-decoration: none; font-size: 30px;
+        @media (max-width: 600px) {
+            .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
+<div class="container">
+    <div class="header-container" onclick="activateAdminMode()">
+        <img src="gmslogo.png" alt="Logo" class="main-logo">
         <h1>GMS_KATALOG BARANG</h1>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="Cari nama barang..." onkeyup="handleSearch(this.value)">
-    </div>
-
-    <div class="filter-group-container">
-        <div class="filter-dropdown">
-            <button class="filter-group-btn" onclick="toggleDropdown('umum')">📦 Material Umum ▼</button>
-            <div id="dropdown-umum" class="dropdown-content">
-                <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua Barang</button>
-                <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
-                <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
-                <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
-            </div>
-        </div>
-
-        <div class="filter-dropdown">
-            <button class="filter-group-btn" onclick="toggleDropdown('khusus')">💎 Material Khusus ▼</button>
-            <div id="dropdown-khusus" class="dropdown-content">
-                <button class="filter-btn" onclick="filterCat('Special Material', this)">Special Material</button>
-            </div>
-        </div>
-        
-        <button onclick="toggleAdminView()" style="background:var(--accent); border:none; padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:bold;">Mode Admin</button>
-    </div>
-
-    <div id="catalog-grid" class="catalog-grid"></div>
-
-    <div id="admin-section" style="display:none;">
-        <h3>Tambah Barang Baru</h3>
-        <div class="admin-form">
+    <div id="adminPanel">
+        <h3 id="formTitle" style="margin-top:0;">Tambah Produk Baru</h3>
+        <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Link Gambar (URL)">
+            <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: adaptor.jpg)">
             <select id="p-cat">
                 <option value="Pipa">Pipa</option>
                 <option value="Aksesoris">Aksesoris</option>
                 <option value="Fitting">Fitting</option>
-                <option value="Special Material">Special Material</option>
             </select>
-            <button onclick="saveProduct()" style="background:var(--primary); color:white; padding:12px; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">Simpan ke Database</button>
+            <textarea id="p-desc" style="height: 100px;" placeholder="Gunakan baris baru untuk setiap ukuran..."></textarea>
+            <button id="saveBtn" class="btn btn-primary" onclick="addItem()">Simpan ke Database</button>
+            <button id="cancelBtn" class="btn btn-danger" style="display:none;" onclick="resetForm()">Batal Edit</button>
+            <button class="btn btn-warning" onclick="logoutAdmin()">Keluar Mode Admin</button>
         </div>
     </div>
 
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <img id="modal-img" src="" alt="">
-            <h2 id="modal-name"></h2>
-            <p id="modal-cat"></p>
-            <a id="whatsapp-link" href="#" target="_blank" class="btn-wa">
-                Hubungi Admin via WA
-            </a>
-        </div>
+    <div class="filter-section">
+        <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua</button>
+        <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
+        <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
+        <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
     </div>
 
-    <a href="https://wa.me/6282295977519" class="floating-wa" target="_blank" title="Chat Admin">💬</a>
+    <div id="catalog-grid" class="catalog-grid"></div>
+</div>
 
-    <script>
-        // --- KONFIGURASI ---
-        const SUPABASE_URL = "https://lqoynorzujcmzyynxmbw.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_eODBvHQjNMS1sZgw_1usHA_yO8YEjLg";
-        const WA_NUMBER = "6282295977519"; // Ganti dengan nomor Anda
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let items = [];
-        let currentFilter = 'Semua';
-        let searchQuery = '';
-
-        async function loadData() {
-            const { data, error } = await _supabase.from('products').select('*').order('id', { ascending: false });
-            if (!error) { items = data; render(); }
-        }
-
-        function render() {
-            const container = document.getElementById('catalog-grid');
-            const isAdmin = document.getElementById('admin-section').style.display === 'block';
-            container.innerHTML = "";
-
-            const filtered = items.filter(item => {
-                const matchCat = (currentFilter === 'Semua' || item.cat === currentFilter);
-                const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchCat && matchSearch;
-            });
-
-            if(filtered.length === 0) { 
-                container.innerHTML = `<div style="grid-column: 1/-1; padding: 50px; color: #888;">Barang tidak ditemukan...</div>`; 
-                return; 
-            }
-
-            filtered.forEach(item => {
-                container.innerHTML += `
-                    <div class="card" onclick="showDetail('${item.name}', '${item.img}', '${item.cat}')">
-                        <img src="${item.img || 'https://via.placeholder.com/200'}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
-                        <h3>${item.name}</h3>
-                        <p>${item.cat}</p>
-                        ${isAdmin ? `<button class="btn-del" onclick="event.stopPropagation(); deleteProduct(${item.id})">Hapus Barang</button>` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        // --- FILTER & SEARCH ---
-        function toggleDropdown(id) {
-            const current = document.getElementById('dropdown-' + id);
-            const isShown = current.classList.contains('show');
-            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-            if(!isShown) current.classList.add('show');
-        }
-
-        function filterCat(cat, btn) {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            render();
-        }
-
-        function handleSearch(val) {
-            searchQuery = val;
-            render();
-        }
-
-        // --- MODAL & WA ---
-        function showDetail(name, img, cat) {
-            document.getElementById('modal-name').innerText = name;
-            document.getElementById('modal-img').src = img || 'https://via.placeholder.com/200';
-            document.getElementById('modal-cat').innerText = "Kategori: " + cat;
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <img id="modalImg" class="modal-img" src="">
+        <div class="modal-body">
+            <h2 id="modalName" style="margin:0; color: var(--primary-dark); text-align:center;"></h2>
+            <div id="modalDesc" class="modal-desc-area"></div>
             
-            const msg = `Halo GMS, saya tertarik dengan produk: *${name}* (${cat}). Apakah stok tersedia?`;
-            document.getElementById('whatsapp-link').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+            <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
             
-            document.getElementById('productModal').style.display = "block";
-        }
+            <div id="adminActions" style="display:none; margin-top:15px; border-top:2px solid #eee; padding-top:10px;">
+                <button class="btn btn-warning" onclick="editItem()">Edit Data</button>
+                <button class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
+            </div>
+            
+            <button class="btn btn-close" onclick="closeModal()">Tutup</button>
+        </div>
+    </div>
+</div>
 
-        function closeModal() { document.getElementById('productModal').style.display = "none"; }
+<script>
+    // --- KONFIGURASI (WAJIB ISI) ---
+    const NO_WHATSAPP = "6282295977519"; 
+    const SUPABASE_URL = 'https://lqoynorzujcmzyynxmbw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_eODBvHQjNMS1sZgw_1usHA_yO8YEjLg';
+    
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- ADMIN FUNCTIONS ---
-        function toggleAdminView() {
-            const s = document.getElementById('admin-section');
-            s.style.display = s.style.display === 'none' ? 'block' : 'none';
-            render();
-        }
+    let items = [];
+    let currentFilter = 'Semua';
+    let isAdmin = localStorage.getItem('gms_admin') === 'true'; // Cek memori admin
+    let clickCount = 0;
+    let currentItemId = null;
+    let isEditing = false;
 
-        async function saveProduct() {
-            const name = document.getElementById('p-name').value;
-            const img = document.getElementById('p-img').value;
-            const cat = document.getElementById('p-cat').value;
-            if(!name) return alert("Minimal isi nama barang!");
+    // Tampilkan panel jika admin sudah login sebelumnya
+    if (isAdmin) document.getElementById('adminPanel').style.display = "block";
 
-            const { error } = await _supabase.from('products').insert([{ name, img, cat }]);
-            if(!error) { 
-                alert("Berhasil disimpan!"); 
-                document.getElementById('p-name').value = ""; 
-                document.getElementById('p-img').value = "";
-                loadData(); 
+    function activateAdminMode() {
+        clickCount++;
+        if (clickCount === 5) {
+            const pin = prompt("Masukkan PIN Admin:");
+            if (pin === "2020") {
+                isAdmin = true;
+                localStorage.setItem('gms_admin', 'true'); // Simpan status login
+                document.getElementById('adminPanel').style.display = "block";
+                alert("Mode Admin Aktif!");
             }
+            clickCount = 0;
         }
+        setTimeout(() => { clickCount = 0; }, 3000);
+    }
 
-        async function deleteProduct(id) {
-            if(!confirm("Hapus barang ini secara permanen?")) return;
-            const { error } = await _supabase.from('products').delete().eq('id', id);
-            if(!error) loadData();
+    function logoutAdmin() {
+        localStorage.removeItem('gms_admin');
+        location.reload();
+    }
+
+    async function fetchData() {
+    const { data, error } = await _supabase.from('products').select('*');
+    if (error) {
+        console.error('Gagal mengambil data:', error);
+    } else {
+        items = data;
+        render();
+    }
+}
+
+    function render() {
+        const container = document.getElementById('catalog-grid');
+        container.innerHTML = "";
+        const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
+        
+        filtered.forEach((item) => {
+            container.innerHTML += `
+                <div class="card" onclick="openModal('${item.id}')">
+                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Tidak+Ada'">
+                    <h3>${item.name}</h3>
+                </div>`;
+        });
+    }
+
+    async function addItem() {
+        const name = document.getElementById('p-name').value;
+        const img = document.getElementById('p-img').value;
+        const cat = document.getElementById('p-cat').value;
+        const desc = document.getElementById('p-desc').value;
+
+        if(!name || !img) return alert("Nama dan Gambar wajib diisi!");
+
+        if (isEditing) {
+            await _supabase.from('products').update({ name, img, cat, desc }).eq('id', currentItemId);
+        } else {
+            await _supabase.from('products').insert([{ name, img, cat, desc }]);
         }
+        
+        resetForm();
+        fetchData();
+        alert("Berhasil!");
+    }
 
-        // Window Clicks
-        window.onclick = function(e) {
-            if(!e.target.matches('.filter-group-btn')) {
-                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-            }
-            if(e.target.className === 'modal') closeModal();
+    function openModal(id) {
+    currentItemId = id;
+    const item = items.find(i => String(i.id) === String(id));
+    
+    if (item) {
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin.";
+        
+        // Letakkan link WA di sini agar selalu muncul
+        document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya tertarik: *${item.name}*`;
+        
+        // Bagian admin dipisah
+        const adminBox = document.getElementById('adminActions');
+        if(adminBox) adminBox.style.display = isAdmin ? "block" : "none";
+        
+        document.getElementById('productModal').style.display = "block";
+    }
+}
+
+    function closeModal() {
+        document.getElementById('productModal').style.display = "none";
+        document.body.style.overflow = 'auto'; // Aktifkan scroll kembali
+    }
+
+    function editItem() {
+        const item = items.find(i => String(i.id) === String(currentItemId));
+        isEditing = true;
+        document.getElementById('p-name').value = item.name;
+        document.getElementById('p-img').value = item.img;
+        document.getElementById('p-cat').value = item.cat;
+        document.getElementById('p-desc').value = item.desc;
+        document.getElementById('formTitle').innerText = "Edit Produk";
+        document.getElementById('cancelBtn').style.display = "block";
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        closeModal();
+    }
+
+    async function deleteItem() {
+        if(confirm("Hapus produk ini?")) {
+            await _supabase.from('products').delete().eq('id', currentItemId);
+            closeModal();
+            fetchData();
         }
+    }
 
-        // Inisialisasi
-        loadData();
-    </script>
+    function resetForm() {
+        isEditing = false;
+        ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+        document.getElementById('formTitle').innerText = "Tambah Produk Baru";
+        document.getElementById('cancelBtn').style.display = "none";
+    }
+
+    function filterCat(cat, btn) {
+        currentFilter = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render();
+    }
+
+    fetchData();
+</script>
 </body>
 </html>
