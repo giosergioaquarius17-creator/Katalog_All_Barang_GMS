@@ -96,8 +96,7 @@
 </head>
 <body>
 
-    <div class="header-container" onclick="activateAdminMode()">
-        <img src="gmslogo.png" alt="Logo" class="main-logo">
+    <div class="header">
         <h1>GMS_KATALOG BARANG</h1>
     </div>
 
@@ -172,35 +171,7 @@
             const { data, error } = await _supabase.from('products').select('*').order('id', { ascending: false });
             if (!error) { items = data; render(); }
         }
-function activateAdminMode() {
-        clickCount++;
-        if (clickCount === 5) {
-            const pin = prompt("Masukkan PIN Admin:");
-            if (pin === "2020") {
-                isAdmin = true;
-                localStorage.setItem('gms_admin', 'true'); // Simpan status login
-                document.getElementById('adminPanel').style.display = "block";
-                alert("Mode Admin Aktif!");
-            }
-            clickCount = 0;
-        }
-        setTimeout(() => { clickCount = 0; }, 3000);
-    }
 
-    function logoutAdmin() {
-        localStorage.removeItem('gms_admin');
-        location.reload();
-    }
-
-    async function fetchData() {
-    const { data, error } = await _supabase.from('products').select('*');
-    if (error) {
-        console.error('Gagal mengambil data:', error);
-    } else {
-        items = data;
-        render();
-    }
-}
         function render() {
             const container = document.getElementById('catalog-grid');
             const isAdmin = document.getElementById('admin-section').style.display === 'block';
