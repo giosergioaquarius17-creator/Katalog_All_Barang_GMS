@@ -162,18 +162,39 @@
         }
     }
 
-    function render() {
-        const container = document.getElementById('catalog-grid');
-        container.innerHTML = "";
-        const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
-        filtered.forEach((item) => {
-            container.innerHTML += `
-                <div class="card" onclick="openModal('${item.id}')">
-                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
-                    <h3>${item.name}</h3>
-                </div>`;
-        });
+    // Gantilah fungsi render Anda dengan ini
+function render() {
+    const container = document.getElementById('catalog-grid');
+    container.innerHTML = "";
+    const filtered = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
+    
+    filtered.forEach((item) => {
+        // Kita pastikan menggunakan item.id yang asli dari Supabase
+        container.innerHTML += `
+            <div class="card" onclick="openModal('${item.id}')">
+                <img src="${item.img}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                <h3>${item.name}</h3>
+            </div>`;
+    });
+}
+
+// Gantilah fungsi openModal Anda dengan ini
+function openModal(id) {
+    currentItemId = id;
+    // Mencari item berdasarkan ID string/angka yang unik
+    const item = items.find(i => String(i.id) === String(id));
+    
+    if (item) {
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin untuk detail.";
+        document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya tertarik dengan: *${item.name}*`;
+        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
+        document.getElementById('productModal').style.display = "block";
+    } else {
+        console.error("Data produk tidak ditemukan untuk ID:", id);
     }
+}
 
     async function addItem() {
         const name = document.getElementById('p-name').value;
