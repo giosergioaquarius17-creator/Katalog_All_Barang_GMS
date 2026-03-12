@@ -70,7 +70,11 @@
             max-width: 450px; width: 90%; position: relative; 
             overflow-y: auto; max-height: 95vh; /* Bisa di-scroll */
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
-        }
+            overflow-y: auto !important; 
+            -webkit-overflow-scrolling: touch; /* Halus untuk iPhone/Safari */
+            display: flex;
+            flex-direction: column;
+}
         .modal-body { padding: 20px; }
         .modal-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; }
         .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 14px; color: #334155; line-height: 1.6; border: 1px solid #e2e8f0; }
@@ -173,12 +177,14 @@
     }
 
     async function fetchData() {
-        const { data, error } = await _supabase.from('products').select('*').order('id', { ascending: false });
-        if (!error) {
-            items = data;
-            render();
-        }
+    const { data, error } = await _supabase.from('products').select('*');
+    if (error) {
+        console.error('Gagal mengambil data:', error);
+    } else {
+        items = data;
+        render();
     }
+}
 
     function render() {
         const container = document.getElementById('catalog-grid');
@@ -214,22 +220,24 @@
     }
 
     function openModal(id) {
-        currentItemId = id;
-        const item = items.find(i => String(i.id) === String(id));
+    currentItemId = id;
+    const item = items.find(i => String(i.id) === String(id));
+    
+    if (item) {
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin.";
         
-        if (item) {
-            document.getElementById('modalImg').src = item.img;
-            document.getElementById('modalName').innerText = item.name;
-            document.getElementById('modalDesc').innerText = item.desc;
-            document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, info stok: *${item.name}*`;
-            
-            // Tampilkan tombol Edit/Hapus hanya jika isAdmin true
-            document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
-            
-            document.getElementById('productModal').style.display = "block";
-            document.body.style.overflow = 'hidden'; // Kunci scroll layar belakang
-        }
+        // Letakkan link WA di sini agar selalu muncul
+        document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya tertarik: *${item.name}*`;
+        
+        // Bagian admin dipisah
+        const adminBox = document.getElementById('adminActions');
+        if(adminBox) adminBox.style.display = isAdmin ? "block" : "none";
+        
+        document.getElementById('productModal').style.display = "block";
     }
+}
 
     function closeModal() {
         document.getElementById('productModal').style.display = "none";
