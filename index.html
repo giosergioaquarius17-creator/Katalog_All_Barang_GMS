@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Minimalis</title>
+    <title>Katalog Pro - Multi Harga</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -17,34 +17,45 @@
         
         /* Panel Form */
         .panel { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: var(--text); font-weight: 800; letter-spacing: -1px; }
+        h1 { text-align: center; color: var(--text); font-weight: 800; }
         
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
         .full-width { grid-column: 1 / -1; }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
         .btn:hover { opacity: 0.9; }
 
-        /* CATALOG GRID (Hanya Gambar & Nama) */
+        /* GRID KATALOG UTAMA */
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; text-align: center; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card h3 { padding: 15px; margin: 0; font-size: 16px; color: var(--text); }
+        .card h3 { padding: 15px; margin: 0; font-size: 15px; text-align: center; color: var(--text); }
 
-        /* MODAL STYLING */
+        /* MODAL POPUP */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 5vh auto; padding: 0; border-radius: 16px; max-width: 500px; overflow: hidden; position: relative; animation: zoomIn 0.3s ease; }
-        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        .close { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10; }
+        .modal-content { background: white; margin: 2vh auto; border-radius: 16px; max-width: 500px; overflow: hidden; position: relative; animation: zoomIn 0.3s ease; max-height: 95vh; overflow-y: auto; }
+        @keyframes zoomIn { from {transform: scale(0.95); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .close { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #fff; z-index: 10; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
         
         .modal-body { padding: 25px; }
-        .modal-img { width: 100%; max-height: 350px; object-fit: cover; }
-        .modal-price { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin: 15px 0; }
-        .modal-badge { background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-        .btn-delete-container { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-danger { background: var(--danger); width: 100%; padding: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; }
+        .modal-img { width: 100%; height: 300px; object-fit: contain; background: #f1f5f9; }
+        
+        /* CSS KHUSUS DESKRIPSI (Agar Enter Terbaca) */
+        .modal-desc-area { 
+            white-space: pre-wrap; /* Menjaga spasi dan baris baru (Enter) */
+            line-height: 1.6; 
+            color: #334155; 
+            background: #f8fafc; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .modal-badge { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; text-transform: uppercase; }
+        .btn-danger { background: var(--danger); width: 100%; padding: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; margin-top: 20px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -55,16 +66,14 @@
     <div class="panel">
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-price" placeholder="Harga (Contoh: 7.900)">
-            <input type="text" id="p-img" placeholder="Nama File Gambar">
-            <input type="text" id="p-size" placeholder="Ukuran">
+            <input type="text" id="p-img" placeholder="File Gambar (contoh: male-adaptor.jpg)">
             <select id="p-cat">
-                <option value="Umum">Pilih Kategori</option>
+                <option value="Umum">Kategori: Umum</option>
                 <option value="Fitting">Fitting</option>
                 <option value="Elektronik">Elektronik</option>
             </select>
-            <textarea id="p-desc" class="full-width" placeholder="Deskripsi Lengkap"></textarea>
-            <button class="btn full-width" onclick="addItem()">Tambahkan ke Katalog</button>
+            <textarea id="p-desc" class="full-width" style="height: 120px;" placeholder="Tulis rincian ukuran dan harga di sini. Contoh:&#10;Ukuran 1/2 : Rp 7.900&#10;Ukuran 3/4 : Rp 10.000"></textarea>
+            <button class="btn full-width" onclick="addItem()">Simpan ke Katalog</button>
         </div>
     </div>
 
@@ -78,13 +87,10 @@
         <div class="modal-body">
             <span id="modalCat" class="modal-badge"></span>
             <h2 id="modalName" style="margin: 10px 0;"></h2>
-            <p id="modalSize" style="color: #64748b; font-size: 14px;"></p>
-            <p id="modalDesc" style="line-height: 1.5; color: #334155;"></p>
-            <div id="modalPrice" class="modal-price"></div>
+            <div style="font-weight: bold; margin-bottom: 5px;">Rincian Harga & Ukuran:</div>
+            <div id="modalDesc" class="modal-desc-area"></div>
             
-            <div class="btn-delete-container">
-                <button id="deleteBtn" class="btn-danger">Hapus Produk dari Database</button>
-            </div>
+            <button id="deleteBtn" class="btn-danger">Hapus Produk</button>
         </div>
     </div>
 </div>
@@ -95,11 +101,10 @@
     function render() {
         const container = document.getElementById('catalog-grid');
         container.innerHTML = "";
-
         items.forEach((item, index) => {
             container.innerHTML += `
                 <div class="card" onclick="openModal(${index})">
-                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Rusak'">
+                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
                     <h3>${item.name}</h3>
                 </div>
             `;
@@ -107,21 +112,17 @@
     }
 
     function addItem() {
-        const newItem = {
-            name: document.getElementById('p-name').value,
-            price: document.getElementById('p-price').value,
-            img: document.getElementById('p-img').value,
-            cat: document.getElementById('p-cat').value,
-            size: document.getElementById('p-size').value,
-            desc: document.getElementById('p-desc').value
-        };
+        const name = document.getElementById('p-name').value;
+        const img = document.getElementById('p-img').value;
+        const cat = document.getElementById('p-cat').value;
+        const desc = document.getElementById('p-desc').value;
 
-        if(newItem.name && newItem.price) {
-            items.push(newItem);
+        if(name && img) {
+            items.push({ name, img, cat, desc });
             saveData();
-            clearInputs();
+            clearForm();
         } else {
-            alert("Nama dan Harga wajib diisi!");
+            alert("Nama Barang dan Gambar wajib diisi!");
         }
     }
 
@@ -130,15 +131,9 @@
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
         document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalSize').innerText = "Ukuran: " + (item.size || '-');
-        document.getElementById('modalDesc').innerText = item.desc || "Tidak ada deskripsi.";
-        document.getElementById('modalPrice').innerText = "Rp " + item.price;
+        document.getElementById('modalDesc').innerText = item.desc || "Belum ada rincian harga.";
         
-        // Atur tombol hapus di dalam modal
-        document.getElementById('deleteBtn').onclick = function() {
-            deleteItem(index);
-        };
-
+        document.getElementById('deleteBtn').onclick = function() { deleteItem(index); };
         document.getElementById('productModal').style.display = "block";
     }
 
@@ -147,7 +142,7 @@
     }
 
     function deleteItem(index) {
-        if(confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+        if(confirm("Hapus produk ini?")) {
             items.splice(index, 1);
             saveData();
             closeModal();
@@ -159,8 +154,10 @@
         render();
     }
 
-    function clearInputs() {
-        ['p-name', 'p-price', 'p-img', 'p-desc', 'p-size'].forEach(id => document.getElementById(id).value = '');
+    function clearForm() {
+        document.getElementById('p-name').value = "";
+        document.getElementById('p-img').value = "";
+        document.getElementById('p-desc').value = "";
     }
 
     window.onclick = function(event) {
