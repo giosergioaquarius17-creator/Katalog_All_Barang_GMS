@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Full Features</title>
+    <title>Katalog Pro - Versi Final</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -29,7 +29,9 @@
         .btn-primary { background: var(--primary); width: 100%; }
         .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; }
         .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; }
-        .btn-backup { background: var(--secondary); margin-top: 10px; font-size: 12px; }
+        
+        .admin-tools { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 8px; }
 
         /* FILTER KATEGORI */
         .filter-section { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -52,28 +54,33 @@
         .modal-img { width: 100%; height: 280px; object-fit: contain; background: #f1f5f9; }
         .modal-desc-area { white-space: pre-wrap; line-height: 1.6; color: #334155; background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
         .modal-badge { background: #e2e8f0; color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        
+        #importFile { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Katalog Digital Kami</h1>
+    <h1>Katalog Digital</h1>
 
     <div class="panel">
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Nama File Gambar (contoh: male-adaptor.jpg)">
-            
+            <input type="text" id="p-img" placeholder="Nama File Gambar">
             <select id="p-cat">
                 <option value="Pipa">Pipa</option>
                 <option value="Aksesoris Pipa">Aksesoris Pipa</option>
                 <option value="Fitting">Fitting</option>
                 <option value="Lainnya">Lainnya</option>
             </select>
-            
             <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Rincian Harga & Ukuran..."></textarea>
             <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
-            <button class="btn btn-backup" onclick="downloadBackup()">Download Backup Data (JSON)</button>
+            
+            <div class="admin-tools">
+                <button class="btn btn-tool" onclick="downloadBackup()">⬇️ Download Backup</button>
+                <label for="importFile" class="btn btn-tool">⬆️ Upload/Restore Data</label>
+                <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+            </div>
         </div>
     </div>
 
@@ -104,36 +111,82 @@
 </div>
 
 <script>
-    // 1. PENGATURAN AWAL
-    const WHATSAPP_NUMBER = "6282295977519"; // Ganti dengan nomor WA Anda
+    const WHATSAPP_NUMBER = "6282295977519"; // Ganti ke nomor Anda
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
     let currentFilter = 'Semua';
 
-    // 2. RENDER KATALOG
-    function render(data = items) {
+    function render() {
         const container = document.getElementById('catalog-grid');
         container.innerHTML = "";
-        
-        const filteredData = currentFilter === 'Semua' 
-            ? data 
-            : data.filter(i => i.cat === currentFilter);
-
-        filteredData.forEach((item, index) => {
+        const data = currentFilter === 'Semua' ? items : items.filter(i => i.cat === currentFilter);
+        data.forEach((item) => {
             const originalIndex = items.indexOf(item);
             container.innerHTML += `
                 <div class="card" onclick="openModal(${originalIndex})">
                     <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Kosong'">
                     <h3>${item.name}</h3>
-                </div>
-            `;
+                </div>`;
         });
     }
 
-    // 3. TAMBAH ITEM
     function addItem() {
         const name = document.getElementById('p-name').value;
         const img = document.getElementById('p-img').value;
         const cat = document.getElementById('p-cat').value;
         const desc = document.getElementById('p-desc').value;
+        if(name && img) {
+            items.push({ name, img, cat, desc });
+            saveData();
+            ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+        }
+    }
 
-        if(name && img)
+    function filterCat(cat, btn) {
+        currentFilter = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render();
+    }
+
+    function openModal(index) {
+        const item = items[index];
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalCat').innerText = item.cat;
+        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin.";
+        document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Halo, info untuk *${item.name}*`;
+        document.getElementById('deleteBtn').onclick = () => { if(confirm("Hapus?")) { items.splice(index, 1); saveData(); closeModal(); }};
+        document.getElementById('productModal').style.display = "block";
+    }
+
+    // FUNGSI BACKUP & RESTORE
+    function downloadBackup() {
+        const blob = new Blob([JSON.stringify(items)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "backup_katalog.json";
+        a.click();
+    }
+
+    function importData(event) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedItems = JSON.parse(e.target.result);
+                if(confirm("Timpa data saat ini dengan data backup?")) {
+                    items = importedItems;
+                    saveData();
+                }
+            } catch (err) { alert("File tidak valid!"); }
+        };
+        reader.readAsText(event.target.files[0]);
+    }
+
+    function closeModal() { document.getElementById('productModal').style.display = "none"; }
+    function saveData() { localStorage.setItem('catalog_db', JSON.stringify(items)); render(); }
+    window.onclick = (e) => { if (e.target == document.getElementById('productModal')) closeModal(); }
+    render();
+</script>
+</body>
+</html>
