@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Green Edition</title>
+    <title>Katalog Pro - Admin Edit Mode</title>
     <style>
         :root {
-            /* Warna Tema Hijau */
             --primary: #16a34a; 
             --primary-dark: #15803d;
             --whatsapp: #25d366;
             --danger: #ef4444;
+            --warning: #f59e0b; /* Warna untuk tombol Edit */
             --secondary: #64748b;
-            /* Background Gradasi */
             --bg-gradient: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
             --text: #14532d;
         }
@@ -27,41 +26,23 @@
 
         .container { max-width: 1100px; margin: auto; }
         
-        /* Header dengan Logo */
         .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 35px;
-            cursor: pointer;
-            user-select: none;
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin-bottom: 35px; cursor: pointer; user-select: none;
         }
 
-        .main-logo {
-            height: 60px;
-            width: auto;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-        }
+        .main-logo { height: 60px; width: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 
         h1 { 
-            text-align: center; 
-            color: var(--primary-dark); 
-            font-weight: 900; 
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            text-align: center; color: var(--primary-dark); font-weight: 900; 
+            margin: 0; text-transform: uppercase; letter-spacing: 2px;
             text-shadow: 1px 1px 0px white, 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Panel Admin Tersembunyi */
         #adminPanel { 
-            display: none; 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px);
-            padding: 25px; border-radius: 20px; 
-            margin-bottom: 30px; 
-            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.1);
+            display: none; background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); padding: 25px; border-radius: 20px; 
+            margin-bottom: 30px; box-shadow: 0 10px 30px rgba(22, 163, 74, 0.1);
             border: 1px solid rgba(255,255,255,0.6);
         }
 
@@ -72,47 +53,35 @@
         }
 
         .btn { border: none; padding: 14px 24px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; color: white; text-decoration: none; display: inline-block; text-align: center; }
-        .btn-primary { background: var(--primary); width: 100%; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2); }
-        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; box-sizing: border-box; }
-        .btn-danger { background: var(--danger); margin-top: 20px; font-size: 12px; width: 100%; display: none; }
+        .btn-primary { background: var(--primary); width: 100%; }
+        .btn-warning { background: var(--warning); color: white; margin-top: 10px; width: 100%; }
+        .btn-wa { background: var(--whatsapp); margin-top: 15px; width: 100%; }
+        .btn-danger { background: var(--danger); margin-top: 10px; font-size: 12px; width: 100%; }
+        .btn-cancel { background: var(--secondary); margin-top: 10px; width: 100%; }
         
         .admin-tools { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(22, 163, 74, 0.1); padding-top: 20px; }
         .btn-tool { background: var(--secondary); font-size: 11px; flex: 1; padding: 10px; }
 
-        /* Filter Kategori */
         .filter-section { margin-bottom: 35px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn { 
-            padding: 10px 22px; border-radius: 50px; border: none; 
-            background: white; color: var(--primary); cursor: pointer; 
-            font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-        .filter-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
+        .filter-btn { padding: 10px 22px; border-radius: 50px; border: none; background: white; color: var(--primary); cursor: pointer; font-weight: 700; }
+        .filter-btn.active { background: var(--primary); color: white; }
 
-        /* Grid Produk */
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 25px; }
-        .card { 
-            background: white; border-radius: 18px; overflow: hidden; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s;
-        }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 35px rgba(22, 163, 74, 0.12); }
+        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.04); cursor: pointer; transition: 0.4s; }
+        .card:hover { transform: translateY(-10px); }
         .card img { width: 100%; height: 190px; object-fit: cover; }
-        .card h3 { padding: 15px; margin: 0; font-size: 15px; text-align: center; color: var(--text); font-weight: 800; }
+        .card h3 { padding: 15px; margin: 0; font-size: 14px; text-align: center; font-weight: 800; }
 
-        /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(6, 78, 59, 0.6); backdrop-filter: blur(10px); }
         .modal-content { background: white; margin: 3vh auto; border-radius: 24px; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 20px; cursor: pointer; color: #64748b; background: #f1f5f9; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 20px; cursor: pointer; z-index: 10; background: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .modal-body { padding: 30px; }
         .modal-img { width: 100%; height: 320px; object-fit: contain; background: #f0fdf4; }
         .modal-desc-area { white-space: pre-wrap; line-height: 1.7; color: #1e293b; background: #f8fafc; padding: 20px; border-radius: 15px; margin-top: 15px; font-size: 14px; border: 1px solid #e2e8f0; }
         .modal-badge { background: #dcfce7; color: var(--primary-dark); padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
 
-        @media (max-width: 600px) {
-            .header-container { flex-direction: column; gap: 5px; }
-            .main-logo { height: 50px; }
-            h1 { font-size: 1.5rem; }
-        }
         #importFile { display: none; }
+        #editLabel { display: none; color: var(--warning); font-weight: bold; margin-bottom: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -124,20 +93,22 @@
     </div>
 
     <div id="adminPanel">
+        <div id="editLabel"> sedang mengedit barang...</div>
         <div class="grid-form">
             <input type="text" id="p-name" placeholder="Nama Barang">
-            <input type="text" id="p-img" placeholder="Nama File Gambar">
+            <input type="text" id="p-img" placeholder="Nama File Gambar (misal: male.jpg)">
             <select id="p-cat">
                 <option value="Pipa">Pipa</option>
-                <option value="Aksesoris Pipa">Aksesoris Pipa</option>
+                <option value="Aksesoris">Aksesoris</option>
                 <option value="Fitting">Fitting</option>
                 <option value="Lainnya">Lainnya</option>
             </select>
-            <textarea id="p-desc" class="full-width" style="height: 100px;" placeholder="Rincian harga & ukuran..."></textarea>
-            <button class="btn btn-primary full-width" onclick="addItem()">Simpan ke Katalog</button>
+            <textarea id="p-desc" style="height: 100px;" placeholder="Rincian harga & ukuran..."></textarea>
+            <button id="saveBtn" class="btn btn-primary" onclick="addItem()">Simpan ke Katalog</button>
+            <button id="cancelEditBtn" class="btn btn-cancel" style="display:none;" onclick="resetForm()">Batal Edit</button>
             <div class="admin-tools">
-                <button class="btn btn-tool" onclick="downloadBackup()">💾 Backup Data</button>
-                <label for="importFile" class="btn btn-tool">📂 Restore Data</label>
+                <button class="btn btn-tool" onclick="downloadBackup()">💾 Backup</button>
+                <label for="importFile" class="btn btn-tool">📂 Restore</label>
                 <input type="file" id="importFile" accept=".json" onchange="importData(event)">
             </div>
         </div>
@@ -146,7 +117,7 @@
     <div class="filter-section">
         <button class="filter-btn active" onclick="filterCat('Semua', this)">Semua</button>
         <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
-        <button class="filter-btn" onclick="filterCat('Aksesoris Pipa', this)">Aksesoris</button>
+        <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
         <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
     </div>
 
@@ -162,18 +133,24 @@
             <h2 id="modalName" style="margin: 15px 0 10px 0;"></h2>
             <div id="modalDesc" class="modal-desc-area"></div>
             <a id="waBtn" href="#" target="_blank" class="btn btn-wa">💬 Tanya Admin / Order</a>
-            <button id="deleteBtn" class="btn btn-danger" onclick="deleteItem()">Hapus Produk dari Database</button>
+            
+            <div id="adminActions" style="display:none; margin-top:20px; border-top:1px dashed #ccc; padding-top:15px;">
+                <button class="btn btn-warning" onclick="editItem()">Edit Data Produk</button>
+                <button class="btn btn-danger" onclick="deleteItem()">Hapus Produk</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    const WHATSAPP_NUMBER = "6282295977519"; // Ganti dengan nomor WA Anda
+    const WHATSAPP_NUMBER = "6282295977519"; 
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
     let currentFilter = 'Semua';
     let isAdmin = false;
     let clickCount = 0;
     let currentItemIndex = null;
+    let isEditing = false;
+    let editIndex = null;
 
     function activateAdminMode() {
         clickCount++;
@@ -182,7 +159,7 @@
             if (pin === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = "block";
-                alert("Mode Admin Aktif!");
+                alert("Mode Admin Aktif! Tombol Edit & Hapus sekarang tersedia di setiap produk.");
             } else {
                 alert("PIN Salah!");
             }
@@ -210,15 +187,53 @@
         const img = document.getElementById('p-img').value;
         const cat = document.getElementById('p-cat').value;
         const desc = document.getElementById('p-desc').value;
-        if(name && img) {
+
+        if(!name || !img) return alert("Nama dan Gambar wajib diisi!");
+
+        if (isEditing) {
+            items[editIndex] = { name, img, cat, desc };
+            alert("Produk berhasil diperbarui!");
+        } else {
             items.push({ name, img, cat, desc });
-            saveData();
-            ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+            alert("Produk berhasil ditambah!");
         }
+
+        saveData();
+        resetForm();
+    }
+
+    function editItem() {
+        const item = items[currentItemIndex];
+        isEditing = true;
+        editIndex = currentItemIndex;
+
+        // Isi form dengan data lama
+        document.getElementById('p-name').value = item.name;
+        document.getElementById('p-img').value = item.img;
+        document.getElementById('p-cat').value = item.cat;
+        document.getElementById('p-desc').value = item.desc;
+
+        // Update UI Admin Panel
+        document.getElementById('editLabel').style.display = "block";
+        document.getElementById('saveBtn').innerText = "Simpan Perubahan";
+        document.getElementById('cancelEditBtn').style.display = "block";
+        
+        // Scroll ke atas agar admin langsung melihat form edit
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        closeModal();
+    }
+
+    function resetForm() {
+        isEditing = false;
+        editIndex = null;
+        ['p-name', 'p-img', 'p-desc'].forEach(id => document.getElementById(id).value = "");
+        document.getElementById('editLabel').style.display = "none";
+        document.getElementById('saveBtn').innerText = "Simpan ke Katalog";
+        document.getElementById('cancelEditBtn').style.display = "none";
     }
 
     function deleteItem() {
-        if(confirm("Hapus produk ini?")) {
+        if(confirm("Hapus produk ini secara permanen?")) {
             items.splice(currentItemIndex, 1);
             saveData();
             closeModal();
@@ -231,9 +246,11 @@
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
         document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin.";
+        document.getElementById('modalDesc').innerText = item.desc || "Hubungi admin untuk rincian.";
         document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Halo, info untuk *${item.name}*`;
-        document.getElementById('deleteBtn').style.display = isAdmin ? "block" : "none";
+        
+        // Munculkan aksi admin jika sudah login
+        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
         document.getElementById('productModal').style.display = "block";
     }
 
@@ -246,16 +263,19 @@
 
     function saveData() { localStorage.setItem('catalog_db', JSON.stringify(items)); render(); }
     function closeModal() { document.getElementById('productModal').style.display = "none"; }
+    
     function downloadBackup() {
         const blob = new Blob([JSON.stringify(items)], {type: "application/json"});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = "katalog_data.json"; a.click();
+        const a = document.createElement('a'); a.href = url; a.download = "backup_katalog.json"; a.click();
     }
+
     function importData(e) {
         const r = new FileReader();
-        r.onload = (event) => { items = JSON.parse(event.target.result); saveData(); alert("Data dipulihkan!"); };
+        r.onload = (event) => { items = JSON.parse(event.target.result); saveData(); alert("Data berhasil dipulihkan!"); };
         r.readAsText(e.target.files[0]);
     }
+
     window.onclick = (e) => { if (e.target == document.getElementById('productModal')) closeModal(); }
     render();
 </script>
