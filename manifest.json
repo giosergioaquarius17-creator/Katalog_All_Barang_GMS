@@ -1,0 +1,21 @@
+{
+  "name": "GMS Katalog Barang",
+  "short_name": "GMS Katalog",
+  "description": "Katalog Produk GMS Interaktif",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "image_20a079.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "image_20a079.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
