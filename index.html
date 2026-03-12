@@ -39,7 +39,17 @@
         /* Tombol Hapus juga disembunyikan secara default */
         #deleteBtn { display: none; }
 
-        h1 { text-align: center; color: var(--primary-dark); font-weight: 800; margin-bottom: 30px; cursor: pointer; user-select: none; }
+        h1 { 
+    text-align: center; 
+    color: var(--primary-dark); 
+    font-weight: 900; /* Lebih tebal */
+    margin-bottom: 30px; 
+    cursor: pointer; 
+    user-select: none;
+    text-transform: uppercase; /* Membuat huruf kapital semua */
+    letter-spacing: 2px; /* Memberi jarak antar huruf agar elegan */
+    text-shadow: 1px 1px 0px rgba(255,255,255,1), 2px 2px 4px rgba(0,0,0,0.1); /* Efek timbul halus */
+}
         
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #bdf1d4; border-radius: 10px; box-sizing: border-box; font-family: inherit; }
@@ -75,7 +85,7 @@
 <body>
 
 <div class="container">
-    <h1 onclick="activateAdminMode()">Katalog Produk Interaktif</h1>
+    <h1 onclick="activateAdminMode()">GMS PRODUK PERPIPAAN</h1>
 
     <div id="adminPanel">
         <div class="grid-form">
