@@ -64,7 +64,17 @@
         .card h3 { padding: 12px; margin: 0; font-size: 13px; text-align: center; text-transform: uppercase; color: var(--text); }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .modal-content { background: white; margin: 5vh auto; border-radius: 20px; max-width: 450px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        ..modal-content { 
+    background: white; 
+    margin: 2vh auto; /* Jarak atas-bawah dikurangi agar tidak terpotong */
+    border-radius: 20px; 
+    max-width: 450px; 
+    width: 90%; /* Lebar responsif di HP */
+    position: relative; 
+    overflow-y: auto; /* Aktifkan scroll vertikal */
+    max-height: 90vh; /* Batas tinggi maksimal agar tidak melebihi layar */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+}
         .modal-body { padding: 20px; }
         .modal-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; }
         .modal-desc-area { white-space: pre-wrap; background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 14px; color: #334155; line-height: 1.5; border: 1px solid #e2e8f0; }
@@ -201,19 +211,24 @@
     }
 
     function openModal(id) {
-        currentItemId = id;
-        // Mencocokkan ID dengan aman (mengonversi ke String untuk perbandingan)
-        const item = items.find(i => String(i.id) === String(id));
+    currentItemId = id;
+    const item = items.find(i => String(i.id) === String(id));
+    
+    if (item) {
+        document.getElementById('modalImg').src = item.img;
+        document.getElementById('modalName').innerText = item.name;
+        document.getElementById('modalDesc').innerText = item.desc;
         
-        if (item) {
-            document.getElementById('modalImg').src = item.img;
-            document.getElementById('modalName').innerText = item.name;
-            document.getElementById('modalDesc').innerText = item.desc || "Silakan hubungi admin untuk info harga.";
-            document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya ingin tanya stok: *${item.name}*`;
-            document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
-            document.getElementById('productModal').style.display = "block";
-        }
+        // Pastikan link WA terisi
+        document.getElementById('waBtn').href = `https://wa.me/${NO_WHATSAPP}?text=Halo, saya ingin tanya stok: *${item.name}*`;
+        
+        // Tombol Admin hanya muncul jika isAdmin true
+        document.getElementById('adminActions').style.display = isAdmin ? "block" : "none";
+        
+        document.getElementById('productModal').style.display = "block";
+        document.body.style.overflow = 'hidden'; // Kunci scroll layar utama saat modal buka
     }
+}
 
     function editItem() {
         const item = items.find(i => String(i.id) === String(currentItemId));
