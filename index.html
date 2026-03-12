@@ -157,7 +157,7 @@
     }
 
     async function fetchData() {
-        const { data, error } = await _supabase.from('products').select('*').order('id', { ascending: false });
+        const { data, error } = await _supabase.from('products').select('*');
         if (error) {
             console.error('Gagal mengambil data:', error);
         } else {
