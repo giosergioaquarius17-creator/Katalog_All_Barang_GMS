@@ -275,12 +275,35 @@
     }
 
     async function deleteItem() {
-        if(confirm("Hapus produk ini?")) {
-            await _supabase.from('products').delete().eq('id', currentItemId);
-            closeModal();
-            fetchData();
+    // 1. Pastikan ID produk tersedia
+    if (!currentItemId) {
+        alert("Gagal menghapus: ID produk tidak ditemukan.");
+        return;
+    }
+
+    // 2. Konfirmasi ulang ke pengguna
+    if (confirm("Hapus produk ini secara permanen dari Database?")) {
+        try {
+            // 3. Eksekusi hapus di Supabase berdasarkan ID (pastikan dikonversi ke format yang benar)
+            const { error } = await _supabase
+                .from('products')
+                .delete()
+                .eq('id', currentItemId);
+
+            if (error) {
+                console.error("Detail Error Supabase:", error);
+                alert("Gagal menghapus dari database: " + error.message);
+            } else {
+                alert("Produk berhasil dihapus!");
+                closeModal(); // Tutup jendela detail
+                fetchData();  // Segarkan daftar produk di layar
+            }
+        } catch (err) {
+            console.error("Kesalahan Sistem:", err);
+            alert("Terjadi kesalahan sistem saat menghapus.");
         }
     }
+}
 
     function resetForm() {
         isEditing = false;
