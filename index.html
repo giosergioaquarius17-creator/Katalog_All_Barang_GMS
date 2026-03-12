@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pro - Modal Detail</title>
+    <title>Katalog Minimalis</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -15,66 +15,56 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .container { max-width: 1100px; margin: auto; }
         
-        /* Form & Filter Section */
-        .panel { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: var(--primary); }
+        /* Panel Form */
+        .panel { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: var(--text); font-weight: 800; letter-spacing: -1px; }
         
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select, textarea { 
-            width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px;
-        }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         .full-width { grid-column: 1 / -1; }
         
-        .btn { 
-            background: var(--primary); color: white; border: none; padding: 12px 24px; 
-            border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s;
-        }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; }
         .btn:hover { opacity: 0.9; }
-        .btn-danger { background: var(--danger); width: 100%; margin-top: 10px; }
 
-        /* Catalog Grid */
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
-        .card-content { padding: 15px; }
-        .category-badge { font-size: 10px; background: #e2e8f0; padding: 4px 8px; border-radius: 20px; text-transform: uppercase; }
-        .price { color: var(--primary); font-weight: bold; font-size: 1.2em; margin: 10px 0; }
+        /* CATALOG GRID (Hanya Gambar & Nama) */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; text-align: center; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { padding: 15px; margin: 0; font-size: 16px; color: var(--text); }
 
         /* MODAL STYLING */
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background-color: white; margin: 5% auto; padding: 30px; border-radius: 15px;
-            max-width: 600px; position: relative; animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
-        .close { position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer; }
-        .modal-img { width: 100%; max-height: 400px; object-fit: contain; border-radius: 10px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+        .modal-content { background: white; margin: 5vh auto; padding: 0; border-radius: 16px; max-width: 500px; overflow: hidden; position: relative; animation: zoomIn 0.3s ease; }
+        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .close { position: absolute; right: 15px; top: 10px; font-size: 30px; cursor: pointer; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10; }
+        
+        .modal-body { padding: 25px; }
+        .modal-img { width: 100%; max-height: 350px; object-fit: cover; }
+        .modal-price { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin: 15px 0; }
+        .modal-badge { background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .btn-delete-container { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-danger { background: var(--danger); width: 100%; padding: 10px; border-radius: 8px; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Katalog Produk Pro</h1>
+    <h1>Katalog Produk</h1>
 
     <div class="panel">
-        <h3>Tambah Item Baru</h3>
         <div class="grid-form">
-            <input type="text" id="p-name" placeholder="Nama Produk">
-            <input type="text" id="p-price" placeholder="Harga (Contoh: 7900)">
-            <input type="text" id="p-img" placeholder="Nama Gambar (Contoh: male-adaptor.jpg)">
-            <input type="text" id="p-size" placeholder="Ukuran (Contoh: 1/2, 3/4, 1)">
+            <input type="text" id="p-name" placeholder="Nama Barang">
+            <input type="text" id="p-price" placeholder="Harga (Contoh: 7.900)">
+            <input type="text" id="p-img" placeholder="Nama File Gambar">
+            <input type="text" id="p-size" placeholder="Ukuran">
             <select id="p-cat">
                 <option value="Umum">Pilih Kategori</option>
-                <option value="Elektronik">Elektronik</option>
                 <option value="Fitting">Fitting</option>
-                <option value="Peralatan">Peralatan</option>
+                <option value="Elektronik">Elektronik</option>
             </select>
-            <textarea id="p-desc" class="full-width" placeholder="Deskripsi Lengkap Produk"></textarea>
-            <button class="btn full-width" onclick="addItem()">Simpan ke Katalog</button>
+            <textarea id="p-desc" class="full-width" placeholder="Deskripsi Lengkap"></textarea>
+            <button class="btn full-width" onclick="addItem()">Tambahkan ke Katalog</button>
         </div>
     </div>
 
@@ -84,33 +74,33 @@
 <div id="productModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <img id="modalImg" class="modal-img" src="" alt="">
-        <h2 id="modalName" style="margin-top: 20px;"></h2>
-        <p id="modalCat" class="category-badge" style="display: inline-block;"></p>
-        <p id="modalSize" style="font-weight: bold; color: var(--primary); margin: 15px 0;"></p>
-        <p id="modalDesc" style="line-height: 1.6; color: #475569;"></p>
-        <div id="modalPrice" class="price" style="font-size: 1.5em;"></div>
+        <img id="modalImg" class="modal-img" src="">
+        <div class="modal-body">
+            <span id="modalCat" class="modal-badge"></span>
+            <h2 id="modalName" style="margin: 10px 0;"></h2>
+            <p id="modalSize" style="color: #64748b; font-size: 14px;"></p>
+            <p id="modalDesc" style="line-height: 1.5; color: #334155;"></p>
+            <div id="modalPrice" class="modal-price"></div>
+            
+            <div class="btn-delete-container">
+                <button id="deleteBtn" class="btn-danger">Hapus Produk dari Database</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     let items = JSON.parse(localStorage.getItem('catalog_db')) || [];
 
-    function render(data) {
+    function render() {
         const container = document.getElementById('catalog-grid');
         container.innerHTML = "";
 
-        data.forEach((item, index) => {
+        items.forEach((item, index) => {
             container.innerHTML += `
                 <div class="card" onclick="openModal(${index})">
-                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Error'">
-                    <div class="card-content">
-                        <span class="category-badge">${item.cat}</span>
-                        <h3 style="margin: 10px 0 5px 0;">${item.name}</h3>
-                        <p style="font-size: 12px; color: #2563eb;">Ukuran: ${item.size || '-'}</p>
-                        <div class="price">Rp ${item.price}</div>
-                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteItem(${index})">Hapus</button>
-                    </div>
+                    <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300?text=Gambar+Rusak'">
+                    <h3>${item.name}</h3>
                 </div>
             `;
         });
@@ -126,25 +116,29 @@
             desc: document.getElementById('p-desc').value
         };
 
-        if(newItem.name && newItem.price && newItem.img) {
+        if(newItem.name && newItem.price) {
             items.push(newItem);
-            saveAndRefresh();
+            saveData();
             clearInputs();
         } else {
-            alert("Isi Nama, Harga, dan Gambar!");
+            alert("Nama dan Harga wajib diisi!");
         }
     }
 
-    // FUNGSI MODAL
     function openModal(index) {
         const item = items[index];
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalName').innerText = item.name;
         document.getElementById('modalCat').innerText = item.cat;
-        document.getElementById('modalSize').innerText = "Tersedia Ukuran: " + (item.size || '-');
+        document.getElementById('modalSize').innerText = "Ukuran: " + (item.size || '-');
         document.getElementById('modalDesc').innerText = item.desc || "Tidak ada deskripsi.";
         document.getElementById('modalPrice').innerText = "Rp " + item.price;
         
+        // Atur tombol hapus di dalam modal
+        document.getElementById('deleteBtn').onclick = function() {
+            deleteItem(index);
+        };
+
         document.getElementById('productModal').style.display = "block";
     }
 
@@ -152,30 +146,28 @@
         document.getElementById('productModal').style.display = "none";
     }
 
-    // Menutup modal jika klik di luar kotak
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('productModal')) {
+    function deleteItem(index) {
+        if(confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+            items.splice(index, 1);
+            saveData();
             closeModal();
         }
     }
 
-    function deleteItem(index) {
-        if(confirm("Hapus produk ini?")) {
-            items.splice(index, 1);
-            saveAndRefresh();
-        }
-    }
-
-    function saveAndRefresh() {
+    function saveData() {
         localStorage.setItem('catalog_db', JSON.stringify(items));
-        render(items);
+        render();
     }
 
     function clearInputs() {
         ['p-name', 'p-price', 'p-img', 'p-desc', 'p-size'].forEach(id => document.getElementById(id).value = '');
     }
 
-    render(items);
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('productModal')) closeModal();
+    }
+
+    render();
 </script>
 
 </body>
