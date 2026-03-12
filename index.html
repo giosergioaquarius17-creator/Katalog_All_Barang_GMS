@@ -190,7 +190,7 @@
     <div class="filter-dropdown">
         <button class="filter-group-btn" onclick="toggleDropdown('umum')">📦 Material Umum ▼</button>
         <div id="dropdown-umum" class="dropdown-content">
-            <button class="filter-btn active" onclick="filterCat('Semua Barang', this)">Semua Barang</button>
+            <button class="filter-btn active" onclick="filterCat('Semua Barang', this)">Semua </button>
             <button class="filter-btn" onclick="filterCat('Pipa', this)">Pipa</button>
             <button class="filter-btn" onclick="filterCat('Aksesoris', this)">Aksesoris</button>
             <button class="filter-btn" onclick="filterCat('Fitting', this)">Fitting</button>
@@ -395,14 +395,13 @@ function openModal(id) {
     }
 
     function filterCat(cat, btn) {
-    // Jika yang diklik adalah 'Semua Barang', ubah filter jadi 'Semua'
+    // Menyelaraskan teks 'Semua Barang' agar dianggap sebagai 'Semua'
     currentFilter = (cat === 'Semua Barang') ? 'Semua' : cat;
 
-    // Reset status aktif tombol
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // Tutup dropdown
+    // Tutup dropdown setelah memilih
     document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
 
     render(); 
