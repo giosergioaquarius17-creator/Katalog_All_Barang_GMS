@@ -3,63 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Produk Saya</title>
+    <title>Katalog Interaktif</title>
     <style>
-        /* CSS Dasar untuk Tampilan */
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
         
-        .catalog-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        /* Form & Search Styling */
+        .controls { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
 
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover { transform: translateY(-5px); }
-
-        .product-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover; /* Memastikan gambar tidak gepeng */
-        }
-
+        /* Grid Styling */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; }
         .product-info { padding: 15px; }
-        .product-price { color: #27ae60; font-weight: bold; font-size: 1.2em; }
-        .product-desc { color: #666; font-size: 0.9em; margin: 10px 0; }
+        .price { color: #28a745; font-weight: bold; font-size: 1.2em; }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align:center;">Katalog Produk Kami</h1>
+<div class="container">
+    <h1>Katalog Produk Interaktif</h1>
 
-    <div class="catalog-container">
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Produk 1">
-            <div class="product-info">
-                <h3>Kamera Mirrorless X</h3>
-                <p class="product-desc">Kamera berkualitas tinggi dengan sensor full frame untuk fotografi profesional.</p>
-                <p class="product-price">Rp 15.000.000</p>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Produk 2">
-            <div class="product-info">
-                <h3>Headphone Noise Cancelling</h3>
-                <p class="product-desc">Suara jernih dan fitur peredam bising yang sangat efektif untuk bekerja.</p>
-                <p class="product-price">Rp 3.500.000</p>
-            </div>
-        </div>
+    <div class="controls">
+        <h3>Tambah Produk Baru</h3>
+        <input type="text" id="new-name" placeholder="Nama Produk (Contoh: Sepatu Nike)">
+        <input type="text" id="new-price" placeholder="Harga (Contoh: Rp 1.000.000)">
+        <input type="text" id="new-img" placeholder="Link Gambar URL (Gunakan link dari internet)">
+        <textarea id="new-desc" placeholder="Deskripsi Singkat"></textarea>
+        <button onclick="tambahProduk()">Tambah ke Katalog</button>
     </div>
+
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Cari produk berdasarkan nama..." onkeyup="cariProduk()">
+    </div>
+
+    <div id="catalog-grid" class="catalog-grid">
+        </div>
+</div>
+
+<script>
+    // 1. Data Produk Awal
+    let daftarProduk = [
+        {
+            nama: "Kamera DSLR Pro",
+            harga: "Rp 12.000.000",
+            gambar: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
+            deskripsi: "Kamera profesional untuk hasil foto tajam."
+        },
+        {
+            nama: "Laptop Gaming Ultra",
+            harga: "Rp 25.000.000",
+            gambar: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500",
+            deskripsi: "Performa tinggi untuk gaming dan desain grafis."
+        }
+    ];
+
+    // 2. Fungsi untuk Menampilkan Produk ke Layar
+    function renderKatalog(data) {
+        const grid = document.getElementById('catalog-grid');
+        grid.innerHTML = ""; // Bersihkan tampilan lama
+
+        data.forEach(item => {
+            grid.innerHTML += `
+                <div class="product-card">
+                    <img src="${item.gambar}" alt="${item.nama}">
+                    <div class="product-info">
+                        <h3>${item.nama}</h3>
+                        <p>${item.deskripsi}</p>
+                        <p class="price">${item.harga}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // 3. Fungsi Tambah Produk Manual
+    function tambahProduk() {
+        const nama = document.getElementById('new-name').value;
+        const harga = document.getElementById('new-price').value;
+        const img = document.getElementById('new-img').value;
+        const desc = document.getElementById('new-desc').value;
+
+        if(nama && harga && img) {
+            const produkBaru = { nama: nama, harga: harga, gambar: img, deskripsi: desc };
+            daftarProduk.push(produkBaru); // Masukkan ke daftar
+            renderKatalog(daftarProduk); // Update tampilan
+            alert("Produk berhasil ditambahkan!");
+        } else {
+            alert("Mohon isi minimal Nama, Harga, dan Gambar!");
+        }
+    }
+
+    // 4. Fungsi Cari Produk
+    function cariProduk() {
+        const keyword = document.getElementById('search-input').value.toLowerCase();
+        const hasilFilter = daftarProduk.filter(p => p.nama.toLowerCase().includes(keyword));
+        renderKatalog(hasilFilter);
+    }
+
+    // Jalankan render pertama kali saat halaman dibuka
+    renderKatalog(daftarProduk);
+</script>
 
 </body>
 </html>
